@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Eight million pixels and counting - lyon, rust</title><link href="https://nical.github.io/" rel="alternate"></link><link href="https://nical.github.io/feeds/lyon-rust.atom.xml" rel="self"></link><id>https://nical.github.io/</id><updated>2018-01-22T00:00:00+01:00</updated><entry><title>Introduction to lyon: 2D vector graphics rendering on the GPU in rust</title><link href="https://nical.github.io/posts/lyon-intro.html" rel="alternate"></link><published>2018-01-22T00:00:00+01:00</published><updated>2018-01-22T00:00:00+01:00</updated><author><name>Nical</name></author><id>tag:nical.github.io,2018-01-22:/posts/lyon-intro.html</id><summary type="html">&lt;p&gt;&lt;a href="https://crates.io/crates/lyon"&gt;&lt;img alt="crate" src="http://meritbadge.herokuapp.com/lyon"&gt;&lt;/a&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Eight million pixels and counting - lyon, rust</title><link href="https://nical.github.io/" rel="alternate"></link><link href="https://nical.github.io/feeds/lyon-rust.atom.xml" rel="self"></link><id>https://nical.github.io/</id><updated>2018-01-22T00:00:00+01:00</updated><entry><title>Introduction to lyon: 2D vector graphics rendering on the GPU in rust</title><link href="https://nical.github.io/posts/lyon-intro.html" rel="alternate"></link><published>2018-01-22T00:00:00+01:00</published><updated>2018-01-22T00:00:00+01:00</updated><author><name>Nical</name></author><id>tag:nical.github.io,2018-01-22:/posts/lyon-intro.html</id><summary type="html">&lt;p&gt;&lt;a href="https://crates.io/crates/lyon"&gt;&lt;img alt="crate" src="https://meritbadge.herokuapp.com/lyon"&gt;&lt;/a&gt;
 &lt;a href="https://docs.rs/lyon"&gt;&lt;img alt="doc" src="https://docs.rs/lyon/badge.svg"&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://github.com/nical/lyon"&gt;Lyon&lt;/a&gt; is a side-project that I have been working on for quite a while. The goal is to play with rendering 2D vector graphics on the GPU, and it's been a lot of fun so far. I haven't talked a lot about it online (except for a couple of reddit …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://crates.io/crates/lyon"&gt;&lt;img alt="crate" src="http://meritbadge.herokuapp.com/lyon"&gt;&lt;/a&gt;
+&lt;p&gt;&lt;a href="https://github.com/nical/lyon"&gt;Lyon&lt;/a&gt; is a side-project that I have been working on for quite a while. The goal is to play with rendering 2D vector graphics on the GPU, and it's been a lot of fun so far. I haven't talked a lot about it online (except for a couple of reddit …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://crates.io/crates/lyon"&gt;&lt;img alt="crate" src="https://meritbadge.herokuapp.com/lyon"&gt;&lt;/a&gt;
 &lt;a href="https://docs.rs/lyon"&gt;&lt;img alt="doc" src="https://docs.rs/lyon/badge.svg"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://github.com/nical/lyon"&gt;Lyon&lt;/a&gt; is a side-project that I have been working on for quite a while. The goal is to play with rendering 2D vector graphics on the GPU, and it's been a lot of fun so far. I haven't talked a lot about it online (except for a couple of reddit threads a year or two ago) so I figured it would be a good topic to get this blog started.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="The logo" src="https://nical.github.io/images/lyon-logo.svg"&gt;&lt;/p&gt;
@@ -77,7 +77,7 @@
 &lt;p&gt;Lyon's fill tessellator is by far where most of the work went so far. But there are a bunch of other goodies too. There is a stroke tessellator that supports most SVG stroke properties (line caps, joins, etc.), and some specialized fill and stroke tessellators for common/simpler shapes (circles, rounded rectangles, convex polygons, polylines etc.).&lt;/p&gt;
 &lt;p&gt;Lyon is plit into a few crates, in a way that is transparent for people who use the main crate, but helps with taming compile times and makes it possible for people to hand-pick certain features with minimal dependencies if they wish to.&lt;/p&gt;
 &lt;h3&gt;lyon::geom&lt;/h3&gt;
-&lt;p&gt;&lt;a href="https://crates.io/crates/lyon_geom"&gt;&lt;img alt="crate" src="http://meritbadge.herokuapp.com/lyon_geom"&gt;&lt;/a&gt;
+&lt;p&gt;&lt;a href="https://crates.io/crates/lyon_geom"&gt;&lt;img alt="crate" src="https://meritbadge.herokuapp.com/lyon_geom"&gt;&lt;/a&gt;
 &lt;a href="https://docs.rs/lyon_geom"&gt;&lt;img alt="doc" src="https://docs.rs/lyon_geom/badge.svg"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Lyon's &lt;a href="https://docs.rs/lyon_geom"&gt;geom&lt;/a&gt; module implements a lot of fun math for curve and line segments in 2D (splitting, flattening, intersecting, measuring, etc.) on top of euclid.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;let&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;curve&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;QuadraticBezierSegment&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
@@ -104,7 +104,7 @@
 
 &lt;p&gt;If you only need this and like minimal dependencies, just do &lt;code&gt;extern crate lyon_geom;&lt;/code&gt; instead of &lt;code&gt;use lyon::geom;&lt;/code&gt;.&lt;/p&gt;
 &lt;h3&gt;lyon::path&lt;/h3&gt;
-&lt;p&gt;&lt;a href="https://crates.io/crates/lyon_path"&gt;&lt;img alt="crate" src="http://meritbadge.herokuapp.com/lyon_path"&gt;&lt;/a&gt;
+&lt;p&gt;&lt;a href="https://crates.io/crates/lyon_path"&gt;&lt;img alt="crate" src="https://meritbadge.herokuapp.com/lyon_path"&gt;&lt;/a&gt;
 &lt;a href="https://docs.rs/lyon_path"&gt;&lt;img alt="doc" src="https://docs.rs/lyon_path/badge.svg"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Lyon's &lt;a href="https://docs.rs/lyon_path"&gt;path&lt;/a&gt; module contains path-related data structures and algorithms.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;use&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lyon&lt;/span&gt;::&lt;span class="n"&gt;path&lt;/span&gt;::&lt;span class="n"&gt;builder&lt;/span&gt;::&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
@@ -179,7 +179,7 @@
 &lt;p&gt;I would like to evolve this crate into a sort of swiss-army-knife of path manipulations, similar to the features &lt;a href="https://github.com/paperjs/paper.js/"&gt;paperjs&lt;/a&gt; offers, for example applying boolean operations to paths, computing convex hulls, etc.&lt;/p&gt;
 &lt;p&gt;Like before, if you only want to play with paths without tessellating themyou can do &lt;code&gt;extern crate lyon_path;&lt;/code&gt; instead of &lt;code&gt;use lyon::path;&lt;/code&gt;.&lt;/p&gt;
 &lt;h3&gt;lyon::svg&lt;/h3&gt;
-&lt;p&gt;&lt;a href="https://crates.io/crates/lyon_svg"&gt;&lt;img alt="crate" src="http://meritbadge.herokuapp.com/lyon_svg"&gt;&lt;/a&gt;
+&lt;p&gt;&lt;a href="https://crates.io/crates/lyon_svg"&gt;&lt;img alt="crate" src="https://meritbadge.herokuapp.com/lyon_svg"&gt;&lt;/a&gt;
 &lt;a href="https://docs.rs/lyon_svg"&gt;&lt;img alt="doc" src="https://docs.rs/lyon_svg/badge.svg"&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;This module reexports the (very good) &lt;a href="https://docs.rs/svgparser"&gt;svgparser crate&lt;/a&gt; and uses it to provide a simple to build a path from an SVG path syntax:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;let&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Path&lt;/span&gt;::&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="n"&gt;with_svg&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
@@ -188,7 +188,7 @@
 
 
 &lt;h3&gt;lyon_tess2&lt;/h3&gt;
-&lt;p&gt;&lt;a href="https://crates.io/crates/lyon_extra"&gt;&lt;img alt="crate" src="http://meritbadge.herokuapp.com/lyon_tess2"&gt;&lt;/a&gt;
+&lt;p&gt;&lt;a href="https://crates.io/crates/lyon_extra"&gt;&lt;img alt="crate" src="https://meritbadge.herokuapp.com/lyon_tess2"&gt;&lt;/a&gt;
 &lt;a href="https://docs.rs/lyon_extra"&gt;&lt;img alt="doc" src="https://docs.rs/lyon_tess2/badge.svg"&gt;&lt;/a&gt; -&lt;/p&gt;
 &lt;p&gt;The lyon_tess2 crate is a very recent addition. It provides an alternative fill tessellator that wraps the &lt;a href="https://github.com/memononen/libtess2"&gt;libtess2&lt;/a&gt; C library. I use it mostly to have something to compare lyon against, but as the two tessellators don't have the exact same feature set it can be useful to others as well.&lt;/p&gt;
 &lt;h3&gt;The command-line app&lt;/h3&gt;
