@@ -131,7 +131,7 @@
 <p>From there to pixels on your screen, it can be very simple or very complicated, that's really up to your rendering engine. You can have a look at <a href="https://github.com/nical/lyon/tree/master/examples">the examples</a> in the repository to get an idea. Lyon doesn't provide a renderering engine (yet), although it is something that I want to explore eventually.</p>
 <h2>What else is there in lyon?</h2>
 <p>Lyon's fill tessellator is by far where most of the work went so far. But there are a bunch of other goodies too. There is a stroke tessellator that supports most SVG stroke properties (line caps, joins, etc.), and some specialized fill and stroke tessellators for common/simpler shapes (circles, rounded rectangles, convex polygons, polylines etc.).</p>
-<p>Lyon is plit into a few crates, in a way that is transparent for people who use the main crate, but helps with taming compile times and makes it possible for people to hand-pick certain features with minimal dependencies if they wish to.</p>
+<p>Lyon is split into a few crates, in a way that is transparent for people who use the main crate, but helps with taming compile times and makes it possible for people to hand-pick certain features with minimal dependencies if they wish to.</p>
 <h3>lyon::geom</h3>
 <p><a href="https://crates.io/crates/lyon_geom"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon_geom"></a>
 <a href="https://docs.rs/lyon_geom"><img alt="doc" src="https://docs.rs/lyon_geom/badge.svg"></a></p>
@@ -273,7 +273,7 @@ indices: <span class="o">[</span><span class="m">1</span>, <span class="m">0</sp
 <h3>Maybe the next feature is going to be your idea</h3>
 <p>Or even your next pull request, Who knows?</p>
 <h2>Big thanks to all contributors</h2>
-<p>Now is a good time to underline I didn't all of this work alone. I want to thank again all the <a href="https://github.com/nical/lyon/wiki/Contributors#contributors">awesome individuals</a> who submitted contributions, big and small, to the project. This project is too large for a single person's spare time, and seeing people come and give a hand is the most rewarding and motivating thing. Also thanks a lot to everyone who is using lyon and reporting bugs!</p>
+<p>Now is a good time to underline that I didn't do all of this work alone. I want to thank again all the <a href="https://github.com/nical/lyon/wiki/Contributors#contributors">awesome individuals</a> who submitted contributions, big and small, to the project. This project is too large for a single person's spare time, and seeing people come and give a hand is the most rewarding and motivating thing. Also thanks a lot to everyone who is using lyon and reporting bugs!</p>
 <p>Want to join the fun? Check out the <a href="https://github.com/nical/lyon/blob/master/CONTRIBUTING.md">contribution guidelines</a>, get started on the <a href="https://github.com/nical/lyon/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22">easier issues</a>, and don't hesitate to ask any question on <a href="https://gitter.im/lyon-rs/Lobby">gitter</a> or irc in #rust-gamedev.
 I want this project to be as fun and welcoming as possible and I would love it to be more of a team effort than a one man show. If you are running into issues contribting, <a href="https://github.com/nical/lyon/issues/32">let me know</a>.</p>
 <p><img alt="lyon stickers photo" src="https://nical.github.io/images/lyon-stickers.jpg"></p>
