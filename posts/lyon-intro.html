@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Nical">
+  <meta name="description" content="Posts and writings by Nical">
+
+  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
+
+<meta name="keywords" content="">
+
+  <title>
+    Eight million pixels and counting
+&ndash; Introduction to lyon: 2D vector graphics rendering on the GPU in rust  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <a href="https://nical.github.io/index.html">
+        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
+      </a>
+      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
+      <p></p>
+      <ul>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://nical.github.io/index.html">Index</a>
+      | <a href="https://nical.github.io/archives.html">Archives</a>
+      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
+      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h3><a href="https://nical.github.io/posts/lyon-intro.html">Introduction to lyon: 2D vector graphics rendering on the GPU in rust</a></h3>
+  </div>
+  <div class="article_text">
+    <p><a href="https://crates.io/crates/lyon"><img alt="crate" src="http://meritbadge.herokuapp.com/lyon"></a>
+<a href="https://docs.rs/lyon"><img alt="doc" src="https://docs.rs/lyon/badge.svg"></a></p>
+<p><a href="https://github.com/nical/lyon">Lyon</a> is a side-project that I have been working on for quite a while. The goal is to play with rendering 2D vector graphics on the GPU, and it's been a lot of fun so far. I haven't talked a lot about it online (except for a couple of reddit threads a year or two ago) so I figured it would be a good topic to get this blog started.</p>
+<p><img alt="The logo" src="https://nical.github.io/images/lyon-logo.svg"></p>
+<p>In this post I'll talk very briefly about tessellators (lyon's biggest feature) and show a few code snippets to illustrate some of the things you can do with lyon today.</p>
+<h2>Tessellation</h2>
+<p>Path tessellation (or triangulation), in a nutshell, is taking a path (for example a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D">canvas</a> or <a href="https://www.w3.org/TR/SVG/paths.html#PathData">SVG</a> path) and approximating it with a set of triangles (like the way we usually represent 3d models but in 2d). While the output of the tessellator is customizable, lyon is pretty much designed for generating vertex and index buffers, which anyone working with low level graphics APIs should be familiar with. As a result we obtain geometry in a format that is very easy to work with on the GPU using the same techniques used for 3D graphics.</p>
+<p><img alt="tessellated shape" src="https://nical.github.io/images/lyon-logo-tessellated.png"></p>
+<h2>Monotone decomposition</h2>
+<p>So how do we go about tessellating a path? The three most common algorithms are <a href="https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf">ear-clipping</a>, <a href="http://www0.cs.ucl.ac.uk/staff/m.slater/Teaching/CG/1997-98/Solutions/Trap/">trapezoidal decomposition</a> and monotone decomposition. In lyon I went for the latter.</p>
+<p>Traditionally this algorithm is performed in three passes over the geometry:</p>
+<ul>
+<li>The first step is to partition the shape in non-self-intersecting shapes (usually using the <a href="https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm">Bentley-Ottmann algorithm</a>),</li>
+<li>then partition these into y-monotone shapes,</li>
+<li>and finally tessellate these y-monotone shapes into triangles.</li>
+</ul>
+<p>I want to come back to this in greater details in another post, but I'll just mention here that lyon's fill tessellator is a bit different from the typical implementation of monotone tessellation in the way it represents paths, and runs the steps above in single pass instead of three. Diverging from the traditional implementations seems to pay off since some <a href="https://github.com/nical/lyon/blob/53b6eb48f6c01e1ff8cf6c0ce4010c9019d63e39/bench/tess/src/main.rs#L154">early measurements</a> show lyon to be a bit more than twice as fast as <a href="https://github.com/memononen/libtess2">libtess2</a>. Take this with a grain of salt, I do need to measure a much wider range of test cases before I can boast about anything, but it's encouraging and there are still a lot of low hanging fruits on the performance side of things.</p>
+<h2>Let's look at some code</h2>
+<p>The easiest way to show off some of what lyon can do for you is to look at some code snippets:</p>
+<div class="highlight"><pre><span></span><span class="k">extern</span><span class="w"> </span><span class="k">crate</span><span class="w"> </span><span class="n">lyon</span><span class="p">;</span><span class="w"></span>
+<span class="k">use</span><span class="w"> </span><span class="n">lyon</span>::<span class="n">math</span>::<span class="n">point</span><span class="p">;</span><span class="w"></span>
+<span class="k">use</span><span class="w"> </span><span class="n">lyon</span>::<span class="n">path</span>::<span class="n">default</span>::<span class="n">Path</span><span class="p">;</span><span class="w"></span>
+<span class="k">use</span><span class="w"> </span><span class="n">lyon</span>::<span class="n">path</span>::<span class="n">builder</span>::<span class="o">*</span><span class="p">;</span><span class="w"></span>
+<span class="k">use</span><span class="w"> </span><span class="n">lyon</span>::<span class="n">tessellation</span>::<span class="o">*</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Build a Path.</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">builder</span><span class="p">.</span><span class="n">quadratic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">builder</span><span class="p">.</span><span class="n">cubic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Let&#39;s use our own custom vertex type instead of the default one.</span>
+<span class="w">    </span><span class="cp">#[derive(Copy, Clone, Debug)]</span><span class="w"></span>
+<span class="w">    </span><span class="k">struct</span> <span class="nc">MyVertex</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">position</span>: <span class="p">[</span><span class="kt">f32</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">normal</span>: <span class="p">[</span><span class="kt">f32</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Will contain the result of the tessellation.</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">geometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexBuffers</span>::<span class="n">new</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">tessellator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FillTessellator</span>::<span class="n">new</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Compute the tessellation.</span>
+<span class="w">        </span><span class="n">tessellator</span><span class="p">.</span><span class="n">tessellate_path</span><span class="p">(</span><span class="w"></span>
+<span class="w">            </span><span class="n">path</span><span class="p">.</span><span class="n">path_iter</span><span class="p">(),</span><span class="w"></span>
+<span class="w">            </span><span class="o">&amp;</span><span class="n">FillOptions</span>::<span class="n">default</span><span class="p">(),</span><span class="w"></span>
+<span class="w">            </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">BuffersBuilder</span>::<span class="n">new</span><span class="p">(</span><span class="w"></span>
+<span class="w">                </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">geometry</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="o">|</span><span class="n">vertex</span><span class="w"> </span>: <span class="nc">FillVertex</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="n">MyVertex</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                        </span><span class="n">position</span>: <span class="nc">vertex</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">to_array</span><span class="p">(),</span><span class="w"></span>
+<span class="w">                        </span><span class="n">normal</span>: <span class="nc">vertex</span><span class="p">.</span><span class="n">normal</span><span class="p">.</span><span class="n">to_array</span><span class="p">(),</span><span class="w"></span>
+<span class="w">                    </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">),</span><span class="w"></span>
+<span class="w">        </span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// The tessellated geometry is ready to be uploaded to the GPU.</span>
+<span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot; -- {} vertices {} indices&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">geometry</span><span class="p">.</span><span class="n">vertices</span><span class="p">.</span><span class="n">len</span><span class="p">(),</span><span class="w"></span>
+<span class="w">        </span><span class="n">geometry</span><span class="p">.</span><span class="n">indices</span><span class="p">.</span><span class="n">len</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+
+
+<p>Et voilà! With a fairly small amount of code you can create a path and generate the vertex/index buffers that you will be able to easily render on the GPU with glium, gfx-rs, vulkano, OpenGL, or what have you.</p>
+<p>From there to pixels on your screen, it can be very simple or very complicated, that's really up to your rendering engine. You can have a look at <a href="https://github.com/nical/lyon/tree/master/examples">the examples</a> in the repository to get an idea. Lyon doesn't provide a renderering engine (yet), although it is something that I want to explore eventually.</p>
+<h2>What else is there in lyon?</h2>
+<p>Lyon's fill tessellator is by far where most of the work went so far. But there are a bunch of other goodies too. There is a stroke tessellator that supports most SVG stroke properties (line caps, joins, etc.), and some specialized fill and stroke tessellators for common/simpler shapes (circles, rounded rectangles, convex polygons, polylines etc.).</p>
+<p>Lyon is plit into a few crates, in a way that is transparent for people who use the main crate, but helps with taming compile times and makes it possible for people to hand-pick certain features with minimal dependencies if they wish to.</p>
+<h3>lyon::geom</h3>
+<p><a href="https://crates.io/crates/lyon_geom"><img alt="crate" src="http://meritbadge.herokuapp.com/lyon_geom"></a>
+<a href="https://docs.rs/lyon_geom"><img alt="doc" src="https://docs.rs/lyon_geom/badge.svg"></a></p>
+<p>Lyon's <a href="https://docs.rs/lyon_geom">geom</a> module implements a lot of fun math for curve and line segments in 2D (splitting, flattening, intersecting, measuring, etc.) on top of euclid.</p>
+<div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">curve</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QuadraticBezierSegment</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">from</span>: <span class="nc">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">ctrl</span>: <span class="nc">point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">to</span>: <span class="nc">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">),</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">c1</span><span class="p">,</span><span class="w"> </span><span class="n">c2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curve</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="mf">0.2</span><span class="p">);</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Line</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">point</span>: <span class="nc">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">vector</span>: <span class="nc">point</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="n">intersection</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">curve</span><span class="p">.</span><span class="n">line_intersections</span><span class="p">(</span><span class="o">&amp;</span><span class="n">line</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//...</span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">curve</span><span class="p">.</span><span class="n">flattened_for_each</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="o">|</span><span class="n">point</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Approximates the curve with a sequence of line segments such</span>
+<span class="w">    </span><span class="c1">// that the approximation is never more than 0.01 away from the</span>
+<span class="w">    </span><span class="c1">// theoretical curve.</span>
+<span class="w">    </span><span class="n">approximation</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">point</span><span class="p">);</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span>
+</pre></div>
+
+
+<p>If you only need this and like minimal dependencies, just do <code>extern crate lyon_geom;</code> instead of <code>use lyon::geom;</code>.</p>
+<h3>lyon::path</h3>
+<p><a href="https://crates.io/crates/lyon_path"><img alt="crate" src="http://meritbadge.herokuapp.com/lyon_path"></a>
+<a href="https://docs.rs/lyon_path"><img alt="doc" src="https://docs.rs/lyon_path/badge.svg"></a></p>
+<p>Lyon's <a href="https://docs.rs/lyon_path">path</a> module contains path-related data structures and algorithms.</p>
+<div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">lyon</span>::<span class="n">path</span>::<span class="n">builder</span>::<span class="o">*</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// The default builder, it supports segments, bézier curves and arcs in</span>
+<span class="c1">// absolute coordinates</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">quadratc_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">path1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1">// This builder offers the full set of SVG path commands, and translates</span>
+<span class="c1">// them into absolute coordinates since the default path data structure</span>
+<span class="c1">// doesn&#39;t support relative coordinates.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">().</span><span class="n">with_svg</span><span class="p">();</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">relative_line_to</span><span class="p">(</span><span class="n">vector</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">smooth_relative_cubic_bezier_to</span><span class="p">(</span><span class="n">vector</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">),</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">));</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">path2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1">// This one automatically flattens the path (approximates curves with</span>
+<span class="c1">// a sequence of line_to commands) using 0.01 as tolerance threshold</span>
+<span class="c1">// to build the approximation.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">().</span><span class="n">flattened</span><span class="p">(</span><span class="mf">0.01</span><span class="p">);</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">cubic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">));</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">build</span><span class="p">().</span><span class="n">path_iter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">PathEvent</span>::<span class="n">MoveTo</span><span class="p">(</span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/*...*/</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">PathEvent</span>::<span class="n">LineTo</span><span class="p">(</span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/*...*/</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">PathEvent</span>::<span class="n">Close</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/*...*/</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">other</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">panic</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;unexpected curve segment {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">other</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// These can be composed, you get the idea...</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">().</span><span class="n">with_svg</span><span class="p">().</span><span class="n">flattened</span><span class="p">(</span><span class="mf">0.01</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1">// While the builder adapters APIs provide &quot;push&quot;-style conversions</span>
+<span class="c1">// between various path formats, the same kind of operations are</span>
+<span class="c1">// provided in a &quot;pull&quot;-style API with iterator adapters from the</span>
+<span class="c1">// lyon::path::iterator module.</span>
+
+<span class="c1">// This path stores some curves, and the events are flattened on the</span>
+<span class="c1">// fly by the iterator.</span>
+<span class="k">for</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">path2</span><span class="p">.</span><span class="n">path_iter</span><span class="p">().</span><span class="n">flattened</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1">// Place some dots at a regular interval along a path.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RegularPattern</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">callback</span>: <span class="o">|</span><span class="n">position</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">_tangent</span><span class="p">,</span><span class="w"> </span><span class="n">_distance</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">dots</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">position</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="n">interval</span>: <span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="c1">// Place dots 3.0 appart from one another.</span>
+<span class="p">};</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">start_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w"></span>
+<span class="n">path</span><span class="p">.</span><span class="n">path_iter</span><span class="p">().</span><span class="n">flattened</span><span class="p">(</span><span class="mf">0.01</span><span class="p">).</span><span class="n">walk</span><span class="p">(</span><span class="n">start_offset</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">pattern</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+
+
+<p>I would like to evolve this crate into a sort of swiss-army-knife of path manipulations, similar to the features <a href="https://github.com/paperjs/paper.js/">paperjs</a> offers, for example applying boolean operations to paths, computing convex hulls, etc.</p>
+<p>Like before, if you only want to play with paths without tessellating themyou can do <code>extern crate lyon_path;</code> instead of <code>use lyon::path;</code>.</p>
+<h3>lyon::svg</h3>
+<p><a href="https://crates.io/crates/lyon_svg"><img alt="crate" src="http://meritbadge.herokuapp.com/lyon_svg"></a>
+<a href="https://docs.rs/lyon_svg"><img alt="doc" src="https://docs.rs/lyon_svg/badge.svg"></a></p>
+<p>This module reexports the (very good) <a href="https://docs.rs/svgparser">svgparser crate</a> and uses it to provide a simple to build a path from an SVG path syntax:</p>
+<div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">().</span><span class="n">with_svg</span><span class="p">();</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">svg</span>::<span class="n">path_utils</span>::<span class="n">build_path</span><span class="p">(</span><span class="n">svg_builder</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="s">&quot;M 0 0 L 10 0 L 10 10 L 0 10 z&quot;</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+
+
+<h3>lyon_tess2</h3>
+<p><a href="https://crates.io/crates/lyon_extra"><img alt="crate" src="http://meritbadge.herokuapp.com/lyon_tess2"></a>
+<a href="https://docs.rs/lyon_extra"><img alt="doc" src="https://docs.rs/lyon_tess2/badge.svg"></a> -</p>
+<p>The lyon_tess2 crate is a very recent addition. It provides an alternative fill tessellator that wraps the <a href="https://github.com/memononen/libtess2">libtess2</a> C library. I use it mostly to have something to compare lyon against, but as the two tessellators don't have the exact same feature set it can be useful to others as well.</p>
+<h3>The command-line app</h3>
+<p>The repository contains command-line application that you can use to tessellate SVG paths in your favorite terminal, render paths, flattend paths, fuzz the tessellators, find bugs, generate reduced test-cases, and maybe soon make coffee. The app could be used, for example as a tool in an art building pipeline for a game engine. It's definitely great for debugging lyon.</p>
+<div class="highlight"><pre><span></span>lyon/cli/ $ cargo run --  show -i ../assets/logo.path --fill --stroke --tolerance <span class="m">0</span>.01
+</pre></div>
+
+
+<p><img alt="screenshot" src="https://nical.github.io/images/lyon-cli-screenshot.png"></p>
+<div class="highlight"><pre><span></span>lyon/cli/ $ cargo run --  tessellate <span class="s2">&quot;M 0 0 L 1 0 L 1 1 L 0 1 Z&quot;</span> --fill
+vertices: <span class="o">[(</span><span class="m">0</span>, <span class="m">0</span><span class="o">)</span>, <span class="o">(</span><span class="m">1</span>, <span class="m">0</span><span class="o">)</span>, <span class="o">(</span><span class="m">0</span>, <span class="m">1</span><span class="o">)</span>, <span class="o">(</span><span class="m">1</span>, <span class="m">1</span><span class="o">)]</span>
+indices: <span class="o">[</span><span class="m">1</span>, <span class="m">0</span>, <span class="m">2</span>, <span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span><span class="o">]</span>
+</pre></div>
+
+
+<h2>What's next?</h2>
+<p>There are many things that I'd like to see happening in the project, and it will certainly take a long time for most of them to concretise as time is a scarse resource.</p>
+<h3>Polish the fill tessellator</h3>
+<p>The fill tessellator has grown into something that I am quite happy about. It is not perfect, I definitely want to keep improving its robustness and finish implementing for the non-zero <a href="https://www.w3.org/TR/SVG/painting.html#FillRuleProperty">fill rule</a>, but it's already robust enough for many use cases. For example <a href="http://ggez.rs">ggez</a>, the rust crate to make good games easily, uses it to render polygons, and I know that a few other projects use it to make games and even to render openstreetmaps data.</p>
+<h3>A new tessellator</h3>
+<p>I want to start working on a new fill tessellator optimized for curves and able to produce a resolution-independent tessellation, probably using trapezoidal partioning like <a href="https://github.com/pcwalton/pathfinder">pathfinder</a>. The new tessellator will work best with curves but will not be as good for polygons as a monotone tessellator, so the current tessellator is definitely here to stay.</p>
+<h3>A high level renderer on top of lyon</h3>
+<p>This was my initial goal when the project started forever ago. As it turns out tessellation was a fascinatingly and hard topic and I decided to focus on it for a while. It would be great to play with a 2D renderer for interactive content (like games and <a href="https://beesandbombs.tumblr.com/">creative coding</a>) and see what a 2D API designed for your GPU would look like (as opposed to GPU backends for APIs that were designed for CPUs a decade or two ago for static content, which is the state of most 2D APIs these days).</p>
+<h3>Documentation</h3>
+<p>There was a big documentation push a year ago and it was worth it. Let's do this again.</p>
+<h3>Maybe the next feature is going to be your idea</h3>
+<p>Or even your next pull request, Who knows?</p>
+<h2>Big thanks to all contributors</h2>
+<p>Now is a good time to underline I didn't all of this work alone. I want to thank again all the <a href="https://github.com/nical/lyon/wiki/Contributors#contributors">awesome individuals</a> who submitted contributions, big and small, to the project. This project is too large for a single person's spare time, and seeing people come and give a hand is the most rewarding and motivating thing. Also thanks a lot to everyone who is using lyon and reporting bugs!</p>
+<p>Want to join the fun? Check out the <a href="https://github.com/nical/lyon/blob/master/CONTRIBUTING.md">contribution guidelines</a>, get started on the <a href="https://github.com/nical/lyon/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22">easier issues</a>, and don't hesitate to ask any question on <a href="https://gitter.im/lyon-rs/Lobby">gitter</a> or irc in #rust-gamedev.
+I want this project to be as fun and welcoming as possible and I would love it to be more of a team effort than a one man show. If you are running into issues contribting, <a href="https://github.com/nical/lyon/issues/32">let me know</a>.</p>
+<p><img alt="lyon stickers photo" src="https://nical.github.io/images/lyon-stickers.jpg"></p>
+<p>There are lyon stickers which is the ultimate proof that the project is cool.</p>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 22 January 2018</p>
+    <p>Category: <a href="https://nical.github.io/category/lyon-rust.html">lyon, rust</a>
+    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Nicolas Silva.</p>
+    </div>
+  </main>
+</body>
+</html>
