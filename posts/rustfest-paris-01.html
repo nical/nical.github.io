@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Nical">
+  <meta name="description" content="Posts and writings by Nical">
+
+  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
+
+<meta name="keywords" content="">
+
+  <title>
+    Eight million pixels and counting
+&ndash; RustFest Paris - Part 1 - Intro  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <a href="https://nical.github.io/index.html">
+        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
+      </a>
+      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
+      <p></p>
+      <ul>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://nical.github.io/index.html">Index</a>
+      | <a href="https://nical.github.io/archives.html">Archives</a>
+      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
+      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h3><a href="https://nical.github.io/posts/rustfest-paris-01.html">RustFest Paris - Part 1 - Intro</a></h3>
+  </div>
+  <div class="article_text">
+    <blockquote>
+<p>RustFest organizer: "Are you ready?"</p>
+<p>Me: "Almost."</p>
+<p>(reinstalling Xorg on my laptop 20 minutes before the talk because the window manager would not start)</p>
+</blockquote>
+<p>I gave a talk about <a href="https://github.com/nical/lyon">lyon</a> at <a href="https://paris.rustfest.eu/">RustFest Paris</a>.</p>
+<p>The recordings are already online, so you can watch it <a href="https://app.media.ccc.de/v/rustfest18-7-vector_graphics_rendering_on_the_gpu_in_rust_with_lyon">here</a> or on <a href="https://www.youtube.com/watch?v=2Ng5kpDirDI&amp;list=PL85XCvVPmGQgdqz9kz6qH3SI_hp7Zb4s1&amp;index=7">YouTube</a> if you prefer.</p>
+<p><img alt="lets talk about vector graphics svg" src="https://nical.github.io/images/rustfest/intro.svg"></p>
+<p>Even though I didn't feel super good about the flow of my speech this time around, I think that the talk was well received and the last minute "let's fix my window manager" episode didn't turn into a disaster.</p>
+<p>It motivated me to write a series of short blog posts about the content of the talk, and explain in more details the information which I was delivering in a hurry in the hope that I wouldn't blow up the talk's allocated time slice. Most of the images in this series of posts are slides from the presentation (made in SVG with Inkscape), but there will be additional content too.</p>
+<ul>
+<li><a href="rustfest-paris-01.html">Part 1 - Intro</a></li>
+<li><a href="rustfest-paris-02.html">Part 2 - Path rendering challenges</a></li>
+<li>Part 3 - Lyon's path tessellation algorithm</li>
+<li>Part 4 - Other GPU rendering approaches.</li>
+</ul>
+<p>This post is the introduction of the talk, wherein I introduce vector graphics and try to get the audience somewhat excited about it. Things will get technical in the follow-up posts.</p>
+<h1>RustFest</h1>
+<p>Before I delve into the talk, I'd like to thank the organizers for their great work on RustFest. I can only begin to imagine how stressful and exhausting it can be to organize such an event and I believe it paid off. I had a great time and I believe the other attendees did as well.</p>
+<h1>Raster graphics and vector graphics</h1>
+<p>Before I delve into lyon, let's get the terminology straight. Raster graphics is what typically comes to mind when thinking about images: a uniform grid of pixels where the color of each pixel is specified independently. Working with uniform grids has a lot of nice properties, for example having random-access in the content of the image to sample the color at a particular point, and being able to perform complex operations that sort of rely on random access like convolution filters.</p>
+<p>On the other hand raster images force authors to think about the resolution at which content is produced versus resolution at which it is presented (the output resolution of a screen for example), and they don't always happen to line up perfectly. So what happens when a 800x450 pixels image has to fill a 2560x1440 pixels screen? In most cases the image will look either blurrier or pixelated. At high resolutions, raster images occupy a lot of space. Image compression formats (png, jpeg and more modern successors) do their best to mitigate that in clever ways but size remains a limiting factor when dealing with large amounts of high resolution raster images, be it in terms of disk pass, or network bandwidth.</p>
+<p><img alt="slide raster vs vector" src="https://nical.github.io/images/rustfest/rstr-vctr.svg"></p>
+<p>Fortunately, specifying 2D content pixel by pixel is not the only choice we have at out disposal. In a lot of cases we can author and distribute not the resulting image but the steps to produce it. In very broad terms this is what I refer to when talking about vector graphics.</p>
+<p>Think of the SVG format which can be produced with Inkscape or illustrator. With vector graphics instead of specifying a grid of pixel colors you deal in terms of squares, circles, shapes, polygons, bézier curves, which you can fill and stroke with different types of patterns such as solid colors and gradients. Of course these shapes will eventually get rasterized into a raster image since that's what your screen understands, but the description of vector graphics allows to a great extent to be resolution-independent and happens to be very compact (since specifying a red square requires a small amount of data no matter how many pixels this square will eventually cover).</p>
+<p>Beyond SVG, I consider HTML/CSS to be a vector graphics format, since it is built around the idea of describing how to display 2D content rather than specifying each pixel individually.</p>
+<p>The little shape in the image above doesn't look like much but add many more and you can end up with complex drawings like the famous GhostScript tiger which inevitably appears in any presentation on the topic of vector graphics.</p>
+<p><img alt="tiger" src="https://nical.github.io/images/rustfest/tiger.svg"></p>
+<h1>Vector graphics everywhere</h1>
+<p>Today graphical applications all make use of vector graphics. Fonts are almost always described with vector formats, user interfaces, just like web pages need to be described in a way that adapts to various layouts and resolutions, a problem that vector graphics lends itself to addressing naturally.</p>
+<p><img alt="ui slide" src="https://nical.github.io/images/rustfest/ui.svg"></p>
+<p>Using a vector format to describe maps avoids spending a lot of network bandwidth on all of these pixels and lets you zoom in and out of a map without seeing a blurry mess (unless the application is unable to render the map at interactive frame rate and choses to show you a scaled version of the previous frame while it renders the new one).</p>
+<p><img alt="maps" src="https://nical.github.io/images/rustfest/map.svg"></p>
+<p>Using vector graphics in games can be useful as well. Today, 3D and 2D games come with gigabytes of assets, a huge part of it being fairly high resolution textures. This can be very inconvenient when attempting to distribute games over the network or even just fitting the game alongside the other installed apps in a relatively small drive.
+Some games could also take advantage of the resolution-independence to present content at different scales for gameplay purposes or to enhance the story telling.</p>
+<p><img alt="rpg" src="https://nical.github.io/images/rustfest/rpg.svg"></p>
+<h1>Vector graphics at 60 frames per seconds</h1>
+<p>Turns out that rendering a screen-full of complex vector graphics at an interactive frame rate is challenging. Whether it is on a laptop or a phone, Screens tend to have a <em>lot</em> of pixels. Filling this many pixels with interesting content means a fair amount of arithmetic, and involves a lot of memory accesses. To make things worse, the drawing model for 2D content is typically based on the <a href="https://en.wikipedia.org/wiki/Painter%27s_algorithm">painter's algorithm</a> which consists in drawing back to front, and this content is usually built upon many overlapping layers. Take a closer look at the tiger above to see what I mean. pixels tend to be written to many times (this is called overdraw), which amplifies the cost of rendering at a high resolution.</p>
+<p><img alt="screens" src="https://nical.github.io/images/rustfest/screen.svg"></p>
+<p>As a result of that a lot of applications tend to consider rendering complex vector graphics to be too expensive for high frequency updates and either bake 2D content into textures before releasing the product (a lot of games do that) or architect their rendering tech around hiding this cost, for example by rendering to a intermediate surfaces at a low frequency while these surfaces are composited to the screen at a higher frequency, which allows some types of animations stay at a solid 60fps (web browsers in particular do this).</p>
+<h1>À suivre...</h1>
+<p>That's it for part one. In the next post we'll look at how games approach the problem of redrawing the entire screen with complex content at interactive frame rates. We'll see that we can take advantage of these solutions and apply them to rendering 2D vector graphics as well.</p>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 18 June 2018</p>
+    <p>Category: <a href="https://nical.github.io/category/lyon-rust.html">lyon, rust</a>
+    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Nicolas Silva.</p>
+    </div>
+  </main>
+</body>
+</html>
