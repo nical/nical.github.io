@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Nical">
+  <meta name="description" content="Posts and writings by Nical">
+
+  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
+
+<meta name="keywords" content="">
+
+  <title>
+    Eight million pixels and counting
+&ndash; Lyon in 2018  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <a href="https://nical.github.io/index.html">
+        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
+      </a>
+      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
+      <p></p>
+      <ul>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://nical.github.io/index.html">Index</a>
+      | <a href="https://nical.github.io/archives.html">Archives</a>
+      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
+      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h3><a href="https://nical.github.io/posts/lyon-2018.html">Lyon in 2018</a></h3>
+  </div>
+  <div class="article_text">
+    <p><a href="https://crates.io/crates/lyon"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon"></a>
+<a href="https://docs.rs/lyon"><img alt="doc" src="https://docs.rs/lyon/badge.svg"></a></p>
+<p>About a year ago I published <a href="https://nical.github.io/posts/lyon-intro.html">
+"Introduction to lyon: 2D vector graphics rendering on the GPU in rust"
+</a> on this blog. Lyon was in version <a href="https://docs.rs/lyon/0.8.8/lyon/"><code>0.8.8</code></a> back then and I recently published <a href="https://docs.rs/lyon/0.13.0/lyon/"><code>0.13.0</code></a>.</p>
+<p>In 2018 my activity on the project has varied depending on the time and energy I have had left after work and other activities. As it turns out, working on <a href="http://mozillagfx.wordpress.com/">getting WebRender shipped in Firefox</a> is at the same time amazing and very demanding, and what's left of my brain after a good day of work isn't always up to some of the ambitions I have planned for lyon. Fortunately I am not the only one who contributed to the project, and while progress was slow on the most ambitious plans, I did spend some time on smaller features and polish.</p>
+<p>I'll get to these big plans towards the end of this post. In the mean time let's look at some of the highlights of what changed in lyon in 2018.</p>
+<h2>lyon_geom</h2>
+<p><a href="https://crates.io/crates/lyon_geom"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon"></a>
+<a href="https://docs.rs/lyon_geom"><img alt="doc" src="https://docs.rs/lyon_geom/badge.svg"></a></p>
+<p>I want to start with an epic contribution from <a href="https://github.com/kleintom">Tom Klein</a>: The addition of a robust cubic bézier intersection algorithm using fat line clipping. You can read about this journey in the original <a href="https://github.com/nical/lyon/pull/422">pull request</a> and <a href="https://github.com/nical/lyon/pull/427">followup improvements</a>. Suffice to say, I'm impressed with the quality and rigor of the work Tom put in this feature.</p>
+<p>Tom also <a href="https://github.com/nical/lyon/pull/419">added</a> an elliptic arc to cubic bézier approximation (<a href="https://docs.rs/lyon_geom/0.12.2/lyon_geom/arc/struct.Arc.html#method.for_each_cubic_bezier">doc link</a>).</p>
+<p>There were other additions such as tight bounding rectangle calculation for elliptic arcs, improvements and fixes to the various curve approximation algorithms and a lot of API ergonomic improvements.</p>
+<p>This year has confirmed the trend that a number of people are using lyon_geom without the rest of lyon. The way the lyon crates are separated seems to have paid off in letting people who only want curve math tools get a minimal dependency.</p>
+<h2>lyon_tessellation</h2>
+<p><a href="https://crates.io/crates/lyon_tessellation"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon_tessellation"></a>
+<a href="https://docs.rs/lyon_tessellation"><img alt="doc" src="https://docs.rs/lyon_tessellation/badge.svg"></a></p>
+<p>To me, <a href="https://docs.rs/lyon_tessellation/0.13.0/lyon_tessellation/struct.FillTessellator.html">the fill tessellator</a> is the most important piece of the whole project. The majority of the changes to the fill tessellator were bug fixes, almost all of them related to dreadful numerical precision issues when paths have many self-intersections and in particular when a lot of these self-intersections are almost at the same position. This type of paths isn't representative of human generated content but the robustness of the tessellator is important to me and I want to keep improving it.</p>
+<p>As far as API changes are concerned, I added the possibility to chose the type of the generated indices of the vertex/index buffer pairs. Before that, indices were always <code>u16</code> and some users ran into the limit when generating large amount of geometry with a single path or when tessellating too many paths in the same vertex and index buffer pair. The tessellator now internally works with <code>u32</code> indices and the convenience <a href="https://docs.rs/lyon_tessellation/0.13.0/lyon_tessellation/struct.BuffersBuilder.html"><code>BuffersBuilder</code></a> and <a href="https://docs.rs/lyon_tessellation/0.13.0/lyon_tessellation/struct.VertexBuffers.html"><code>VertexBuffers</code></a> output can be parametrized over the index type to provide the choice of <code>u16</code>, <code>u32</code> or anything else that can be converted to a <code>VertexId</code>.</p>
+<p>In addition, the <code>GeometryBuilder</code> trait and the tessellators are set up to properly handle running out of indices, interrupting the tessellation and returning an error instead of causing a panic as it previously did.</p>
+<p>This might sound like a detail but several people ran into it and the way the tessellator used to panic when running out of vertex ids was confusing so I am happy that this is now a thing of the past. My initial worry was that the added glue to forward and handle errors would regress performance (which it initially did by about 6%), but with a small amount profiling and tweaks I got the performance back within noise range of the original scores (on the benchmarks in the repository).</p>
+<h2>lyon_path</h2>
+<p><a href="https://crates.io/crates/lyon_path"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon_path"></a>
+<a href="https://docs.rs/lyon_path"><img alt="doc" src="https://docs.rs/lyon_path/badge.svg"></a></p>
+<p>This crate has received more attention than usual lately.</p>
+<p>The first thing people who update from earlier versions of lyon will notice is probably that <code>lyon::path::default::Path</code> is now <code>lyon::path::Path</code>. But there have been some more interesting developments than this namespace change.</p>
+<p>The <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/iterator/index.html">iterator APIs</a> got a pretty major revamp. Previously the various flavors of path iterators would let you iterate over events such as <code>MoveTo(Point)</code>, <code>Close</code>, <code>LineTo(Point)</code> and equivalent curve segments types, in a postscript fashion similar to how the paths are created, in which we don't repeat the start of the event since we already provided it as the end of the previous one.
+This was simple to implement since it maps to how the path is stored, but pretty much every consumer of the API would have to keep track of both the previous end of segment and the starting position of the curve to do any meaningful work with the segments of the path.</p>
+<p>The <code>PathEvent</code> enum looked like this:</p>
+<div class="highlight"><pre><span></span><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">PathEvent</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">MoveTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">Close</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">LineTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">QuadraticTo</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span><span class="w"> </span><span class="n">Point</span><span class="p">),</span><span class="w"> </span><span class="c1">// control point, to</span>
+<span class="w">    </span><span class="c1">// etc.</span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+
+
+<p>And now looks like this:</p>
+<div class="highlight"><pre><span></span><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">PathEvent</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">MoveTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">Close</span><span class="p">(</span><span class="n">LineSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">Line</span><span class="p">(</span><span class="n">LineSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">Quadratic</span><span class="p">(</span><span class="n">QuadraticBezierSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// etc.</span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+
+
+<p>In other words, I shifted the burden of tracking this information from the user to <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/struct.Iter.html">the iterator</a> implementation by making path events contain the actual segments and by providing the closing segment in <code>PathEvent::Close(LineSegment&lt;f32&gt;)</code>.</p>
+<p>I also removed <code>PathSegment::Arc</code> (elliptic arcs automatically get approximated with a sequence of cubic bézier curves) and simplified the <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/iterator/trait.PathIterator.html"><code>PathIterator</code> trait</a> which is now a simple extension trait implemented for all <code>Iterator&lt;Item = PathEvent&gt;</code>.</p>
+<p>There is also a new <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/struct.Cursor.html"><code>Cursor</code> API</a> which makes it possible to refer to specific positions within a path and work with portions of paths instead of always iterating over the entire path from the beginning.</p>
+<p>A <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/iterator/trait.FlattenedIterator.html#method.length">helper to approximate the length of a path</a> using adaptive curve flattening was added, although Raph Levien wrote about <a href="https://raphlinus.github.io/curves/2018/12/28/bezier-arclength.html">a faster way to evaluate the length of bézier curve segments</a> which he implemented in in the <a href="http://github.com/linebender/kurbo">kurbo</a> crate. Perhaps some of this good stuff will make its way into lyon as well eventually.</p>
+<p>In the long term I want to experiment with more changes to the path data structure, for example making it generic over the vertex type to allow <code>f64</code> coordinates and potentially arbitrary per-point attributes (for example one could want to store colors, line width, etc.).</p>
+<h2>lyon_algorithms</h2>
+<p><a href="https://crates.io/crates/lyon_algorithms"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon_algorithms"></a>
+<a href="https://docs.rs/lyon_algorithms"><img alt="doc" src="https://docs.rs/lyon_algorithms/badge.svg"></a></p>
+<p>A new crate was introduced this year! <a href="https://docs.rs/lyon_algorithms/">lyon_algorithms</a> contains a number of path related transformations and algorithms such as <a href="https://docs.rs/lyon_algorithms/0.13.0/lyon_algorithms/hatching/index.html">generating hatching and dotting patterns</a>, <a href="https://docs.rs/lyon_algorithms/0.13.0/lyon_algorithms/splitter/struct.Splitter.html">splitting paths</a>, <a href="https://docs.rs/lyon_algorithms/0.13.0/lyon_algorithms/aabb/index.html">computing bounding boxes</a>, <a href="https://docs.rs/lyon_algorithms/0.13.0/lyon_algorithms/raycast/fn.raycast_path.html">ray casting</a> and <a href="https://docs.rs/lyon_algorithms/0.13.0/lyon_algorithms/walk/index.html">walking along a path at constant speed</a>.</p>
+<p>I wrote most of these algorithms for fun. I don't think I will pursue the same robustness goals as the fill tessellator there (path splitting has some very difficult edge cases when several segments overlap exactly for example), but I think that they are good enough to be useful to a lot of people.</p>
+<p>I'd love to add more algorithms there, like boolean operations, path simplification, path smoothing, path interpolation, and so on.</p>
+<p>I have used these algorithms to generate procedural shapes and print them with my <a href="https://www.axidraw.com/">axidraw</a> and it's a ton of fun. Hopefully, some people in the plotting community will find them useful.</p>
+<p><img alt="Hatching example" src="https://nical.github.io/images/hatching-screenshot.png"></p>
+<h2>Work in progress</h2>
+<p>I mentioned at the beginning of the post that I have been making slow progress on two fronts:</p>
+<h3>A new fill tessellator</h3>
+<p>This work is happening in the <a href="https://github.com/nical/lyon/pull/334">new-tess branch</a>. The main motivations for this are:</p>
+<ul>
+<li>Better robustness against numerical precision issues. In broad strokes, the idea is to organize the algorithm so that it can detect and recover from precision bugs that break the invariants of the algorithm. It is a little hard to describe, but in a nutshell the approach is to accept that some arithmetic will produce results that break the invariant of the algorithm and split iterations of the main loop into an analysis phase where we get a chance to detect the error, backtrack one step and recover from it, and a mutation phase. In contrast the current tessellator interleaves mutations of its internal state with analysis of the geometry in a way that makes it hard to interrupt the iteration and recover if a bad state is detected.</li>
+<li>Support arbitrary vertex attributes. Today it is hard to associate external data such as colors or bone weights for animation to each vertex and use it in the output of the tessellator.</li>
+<li>Move away from fixed point numbers which the current tessellator uses internally. I originally thought that they would be the key to taming precision issues, but it didn't work out that well, and introduced new issues like a limited range of numbers that the tessellator can represent internally.</li>
+<li>Support for more fill rules (even-odd is the only currently supported fill rule in the current tessellator).</li>
+<li>Handling quadratic bézier curves directly in the tessellator. The tessellator would be able to either flatten curves on the fly during tessellation, or produce a mesh in which the curves could be evaluated in a fragment shader or tessellation shader. This goal longer term than the others, though.</li>
+</ul>
+<p>So far the new tessellator is able to tessellate all of the non-self intersecting curves I have thrown at it (good thing lyon has a pretty large test suite), but doesn't detect intersections yet, and that's on purpose: ignoring intersections is a great way to mess the internal state of the algorithm up and see if it can recover and continue from there. I'll implement detecting and handling intersections eventually of course.
+I have put no effort in performance yet (will get to that when the new tessellator is close to being usable), it doesn't handle curves and I haven't settled on a way to model the API to support arbitrary vertex attributes when vertices are added during tessellation (again because of self-intersections).</p>
+<h3>Higher quality monotone tessellation</h3>
+<p>By "higher quality", I mean reducing the amount of thin triangles that are generated by the algorithm. Long thin triangles have undesirable properties. For example they tend to produce precision issues when used in certain algorithms like physics simulation, and be <a href="https://www.g-truc.net/post-0662.html">slower to render on the GPU</a>.</p>
+<p>The monotone polygon decomposition approach used in lyon has a tendency to produce long horizontal triangles in some cases. I have a prototype that improves upon this but fails in some cases. To be continued.</p>
+<p><img alt="Thin triangles illustration" src="https://nical.github.io/images/rustfest/adv-monotone.svg"></p>
+<h2>Wrapping up</h2>
+<p>2018 Was a good year for lyon. In this post I put forth Tom Klein's contribution, but other people also helped get the project where it is today. If your name is on <a href="https://github.com/nical/lyon/wiki/Contributors">the contributor list</a>, then you are awesome and I thank you.</p>
+<p>Hopefully 2019 will be the year where the new tessellator matures and replaces the current one and maybe the start of a small vector graphics rendering crate built on top of gfx-hal.</p>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sun 17 February 2019</p>
+    <p>Category: <a href="https://nical.github.io/category/lyon-rust.html">lyon, rust</a>
+    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Nicolas Silva.</p>
+    </div>
+  </main>
+</body>
+</html>
