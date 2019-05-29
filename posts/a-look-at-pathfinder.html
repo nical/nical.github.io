@@ -55,7 +55,7 @@
     <h1><a href="/posts/a-look-at-pathfinder.html">A look at pathfinder</a></h1>
   </div>
   <div class="article_text">
-    <p>This post is about <a href="https://github.com/pcwalton/pathfinder">pathfinder</a>, a GPU vector graphics renderer written in Rust by Patrick Walton as part of hist work in the emerging technologies team at Mozilla. While I have followed this work very closely, I have contributed very little code to pathfinder so the credit really goes to Patrick.</p>
+    <p>This post is about <a href="https://github.com/pcwalton/pathfinder">pathfinder</a>, a GPU vector graphics renderer written in Rust by Patrick Walton as part of his work in the emerging technologies team at Mozilla. While I have followed this work very closely, I have contributed very little code to pathfinder so the credit really goes to Patrick.</p>
 <p>If you've read other entries on the blog you've heard of <a href="https://github.com/nical/lyon">lyon</a>, which helps you with rendering vector graphics on the GPU by turning paths into triangle meshes. Pathfinder takes a completely different approach, so you should ignore everything I have written about lyon's tessellator while reading this post.</p>
 <p>Also, Pathfinder has gone through several complete rewrites each of which going for very different approaches, so information on <a href="https://pcwalton.github.io/2017/02/14/pathfinder.html">some of Patrick's older blog posts</a> doesn't apply anymore.</p>
 <p>Pathfinder can be used to render glyph atlases and larger scenes such as SVG paths. The two use cases are handled a bit differently and in this post I will be focusing on the latter.</p>
