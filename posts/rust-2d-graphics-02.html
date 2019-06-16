@@ -3,11 +3,11 @@
 
 <head>
   <!-- ## for client-side less
-  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
+  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
   <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
   -->
-  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
-  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
 
   <meta charset="utf-8" />
@@ -15,7 +15,6 @@
   <meta name="author" content="Nical">
   <meta name="description" content="Posts and writings by Nical">
 
-  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
 
 <meta name="keywords" content="">
 
@@ -28,16 +27,16 @@
 <body>
   <aside>
     <div id="user_meta">
-      <a href="https://nical.github.io/index.html">
-        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
+      <a href="/index.html">
+        <img src="/theme/images/nical-avatar.svg" alt="logo">
       </a>
-      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
+      <h2><a href="/pages/about-me.html">Nical</a></h2>
       <p></p>
       <ul>
-        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
-        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
-        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
-        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="/theme/images/mozgfx.svg" class="logo"></img></a>
       </ul>
     </div>
   </aside>
@@ -45,16 +44,15 @@
   <main>
     <header>
       <p>
-      <a href="https://nical.github.io/index.html">Index</a>
-      | <a href="https://nical.github.io/archives.html">Archives</a>
-      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
-      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
+      <a href="/index.html">Index</a>
+      | <a href="/archives.html">Archives</a>
+      | <a href="/pages/about-me.html">About me</a>
       </p>
     </header>
 
 <article>
   <div class="article_title">
-    <h3><a href="https://nical.github.io/posts/rust-2d-graphics-02.html">2d graphics in Rust discussion - A look at GPU memory management</a></h3>
+    <h1><a href="/posts/rust-2d-graphics-02.html">2d graphics in Rust discussion - A look at GPU memory management</a></h1>
   </div>
   <div class="article_text">
     <p>In this post I'll write about an piece of the low level details of an hypothetical rust 2d graphics crate built on top of <a href="https://github.com/gfx-rs/gfx">gfx-hal</a>. Gfx provides a vulkan-like interface implemented on top of vulkan, d3d12, metal or flavors of OpenGL. just like the <a href="https://nical.github.io/posts/rust-2d-graphics-01.html">previous post</a> this is in the context of recent discussions about a 2d graphics crate in rust.</p>
@@ -64,7 +62,7 @@
 <p>Let's have a look at <a href="https://github.com/servo/webrender">WebRender</a>. Most drawing primitives in WebRender use very simple geometry (axis-aligned rectangles) with shaders of varying complexity that compute directly on the GPU what happens to the pixels covered by the geometry. If you've ever done serious work with GPU, one of your primary concerns most likely was to batch rendering commands and avoid state changes. To render a few thousand rectangles, it would be terribly inefficient to have a loop on the CPU that sets some parameters and kicks a drawing command for each rectangle. So what we do is write a lot of parameters into buffers which are sent to the GPU, and kick a few drawing commands, that will each render maybe thousands of rectangles in one go using instancing.
 The drawing parameters we write into the buffer contain information such as the position and size of the rectangle in layout space, a transformation to go from layout space to screen space, some flags about whether some anti-aliasing must be done, the positions and sizes of some source images in a texture atlas if need be (for example to apply a texture or a mask), the z-index of the primitive to write into the depth buffer, etc.
 The vertex shader uses an instance id to find the right information in a per-instance parameter buffer, transforms the geometry (a unit quad) into the right rectangle on screen, forwards some data to the fragment shader and the latter executes the per pixel logic (read from the source textures, apply some effect, write output color, etc.).</p>
-<p><img alt="gpu memory organization example" src="https://nical.github.io/images/gpu-mem-01.svg"></p>
+<p><img alt="gpu memory organization example" src="/images/gpu-mem-01.svg"></p>
 <p>This approach is fairly generic, not particular to WebRender (a lot of games do this sort of thing) and works quite well.
 What's interesting here is that if you get to write the shaders yourself you have a lot of flexibility in how the input data is organized in GPU memory. You can put all of the parameters for a given instance contiguous together or add levels of indirection, share some common parameters among many instances or even devise your own compression scheme for your data. All that matters is for the CPU code to know how to writes bytes and the shader to know how to find the data in GPU memory and interpret it the right way, and then it is up to you to decide what trade-off to make about simplicity, memory usage and data locality.</p>
 <p>I like to think of the problem of submitting commands to the GPU as some sort of encoding/decoding problem. Got data on one side, some binary representation in GPU buffers and need to read that correctly in the shader. As such, submitting commands is very tied to GPU memory management since it amounts to writing the correct information in the right place.
@@ -84,14 +82,14 @@ In the purpose of a 2d graphics library, what kind of representation would we wa
 For multi-threading this is also good: Some thread-safe allocator can allocate chunks in parallel, and these chunks could be managed independently in single-thread fashion but each on their single thread by a nested allocator that is hard to make thread-safe.</p>
 <p>Some allocations are best managed manually (explicit allocation and deallocation), while for some other things, using a cache can be more interesting: Each frame, the CPU side requests that the allocations that are used within the cache stay alive, and if an allocation isn't used for a long time, the cache implicitly deallocates it. The next time the allocation is requested, the cache will politely tell the source of the request that the allocation doesn't exist anymore, a new allocation is made and the data is transfered again. A lot the GPU memory management in WebRender is done that way. Having the right heuristics about when to expire cache entries is not always simple.</p>
 <p>So far I talked about allocations in the sense of figuring out how many bytes at which offset to reserve in GPU memory for this and that, but we also want to write into these allocations. Often times people think of allocating and writing into memory as single thing. When writing <code>let five = Box::new(5)</code> you both ask the allocator to figure out where the value will be and write the value in memory. But sending data to the GPU isn't that simple. In general you can't assume that the memory you are writing to on the CPU is the one that gets read in the shaders. There are several memory heaps with different characteristics (CPU-visible, GPU-visible, fast/slow to read/write on the CPU/GPU, etc.). In practice this means that for a lot things the data is first written into a staging buffer that is CPU-visible, then copied from there into memory that is fast to read from the shaders.</p>
-<p><img alt="staging buffer" src="https://nical.github.io/images/gpu-mem-02.svg"></p>
+<p><img alt="staging buffer" src="/images/gpu-mem-02.svg"></p>
 <p>One strategy could be to work with a large GPU buffer for the shader to read and generally smaller staging buffers into which we write only the parts that have changed. In this scheme the shader gets to read from a single contiguous buffer containing static and dynamic data alike and doesn't have to be aware of that. This is at the cost of copying from the staging buffer for data that we now will only read for a single frame. If a lot of data needs to be updated and read only once each frame, using another type of GPU memory heap that is both accessible to the CPU and the GPU, is slower to read in the shader but depending on how the data is read it might still be faster than the copy of the staging buffer. <a href="https://youtu.be/zSG6dPq57P8?t=991">An example</a> given for this type of memory heap is particle positions in a game, where by definition we know all of it will change each frame. The downside is that the shader can't pretend it is in a unified address space with the rest, so it isn't agnostic to what is animated and what is not. This might not be a good fit for cases where, say, some of the positions are animated while others are not and it all goes through the same code path in the shader.
 Another thing to be careful about is that some types of memory heaps use write-combined memory which is ideal to fill the staging buffer but can perform poorly if we don't pay attention to how we write into it. So we have to allocate full aligned multiple-of-cacheline sized chunks and avoid random access.</p>
 <h2>What's next?</h2>
 <p>Phew. That was a lot of words just for pushing some bytes to the GPU! I merely presented some challenges, proposed certain directions from very far away and haven't even really talked about rendering (the fancy tricks that goes into those shaders, generating the geometry and all).</p>
 <p>But I believe this is an important part of the foundation. It is built upon mostly independent pieces and that's already some code that needs writing. Fortunately, this weekend was the first in a while that I had time to sit down and do that so I took one of gfx-hal examples and started writing a few things around it. So far I only have a simple <a href="https://github.com/nical/lyon/blob/371af479cd743c102487835a74299ac50967cadd/renderer/src/allocator.rs#L4">bump allocator</a>, some <a href="https://github.com/nical/lyon/blob/371af479cd743c102487835a74299ac50967cadd/renderer/src/writer.rs#L93">glue to use it and write into memory</a> from multiple threads, a simple and dumb <a href="https://github.com/nical/lyon/blob/371af479cd743c102487835a74299ac50967cadd/renderer/src/allocator.rs#L54">retained allocator</a> for coarse allocations, some <a href="https://github.com/nical/lyon/blob/371af479cd743c102487835a74299ac50967cadd/renderer/src/gfx.rs">reexports of the gfx types</a> without generics all over the place (since the backend is selected with feature flag), and various <a href="https://github.com/nical/lyon/blob/371af479cd743c102487835a74299ac50967cadd/renderer/src/lib.rs#L99">small utilities</a>. That's not much, I'm still spending time getting familiar with gfx, but that's a humble start.</p>
 <p>I'll end this post with hand-wavey overview of how I see this stuff fitting into the bigger picture:</p>
-<p><img alt="boring architecture diagram" src="https://nical.github.io/images/gpu-mem-03.svg"></p>
+<p><img alt="boring architecture diagram" src="/images/gpu-mem-03.svg"></p>
 <p>From bottom to top there is:</p>
 <ul>
 <li>A gfx-device that is owned by an embedder.</li>
@@ -104,7 +102,7 @@ As much as possible I would like to avoid compromises outside of the "API" boxes
   </div>
   <div class="article_meta">
     <p>Posted on: Sun 28 October 2018</p>
-    <p>Category: <a href="https://nical.github.io/category/graphics.html">graphics</a>
+    <p>Category: <a href="/category/graphics.html">graphics</a>
     </p>
   </div>
 
