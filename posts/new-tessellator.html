@@ -68,7 +68,7 @@
 <p>This is done by splitting each iteration in two phases: the <em>scan phase</em> has most of the interesting logic of the algorithm, but doesn't perform any mutation. Instead it records changes that will be applied int the <em>update phase</em> which only performs the mutations.</p>
 <p>Errors can be detected during the scan phase. Sometimes these errors imply that some of the analysis performed during the scan is invalid (for example due to incorrect edge ordering), but it doesn't matter because the scan phase hasn't committed any mutation, so we can bail out of it, do our best to sanitize our initial state and run the iteration again.</p>
 <p>In overly-simplified Rust pseudo-code, the main loop looks somewhat like this:</p>
-<div class="highlight"><pre><span></span><span class="k">impl</span><span class="w"> </span><span class="n">Tesselator</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">impl</span><span class="w"> </span><span class="n">Tesselator</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="k">fn</span> <span class="nf">algorithm</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">TessellationResult</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="c1">// ...</span>
 
@@ -92,7 +92,7 @@
 <span class="w">        </span><span class="c1">// ...</span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
-</pre></div>
+</code></pre></div>
 
 
 <p>This doesn't sound like much but it is a major shift in how the algorithm is organized. This alone required a rewrite and it paid off.</p>

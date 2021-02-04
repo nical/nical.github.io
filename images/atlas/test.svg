@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   viewBox="0 0 860 435"
+   width="860mm"
+   height="435mm">
+    <rect ry="0" x="-1" y="-1" width="862" height="437" style="fill:rgb(50,50,50)" />    <rect ry="5" x="5" y="5" width="90" height="155" style="stroke:none;fill:black;fill-opacity:0.2" />    <rect ry="5" x="125" y="5" width="90" height="155" style="stroke:none;fill:black;fill-opacity:0.2" />    <rect ry="5" x="245" y="5" width="90" height="155" style="stroke:none;fill:black;fill-opacity:0.2" />    <rect ry="5" x="365" y="5" width="90" height="205" style="stroke:none;fill:black;fill-opacity:0.2" />    <rect ry="5" x="485" y="5" width="90" height="255" style="stroke:none;fill:black;fill-opacity:0.2" />    <rect ry="5" x="485" y="270" width="90" height="NaN" style="stroke:none;fill:black;fill-opacity:0.2" />    <rect ry="5" x="605" y="5" width="90" height="305" style="stroke:none;fill:black;fill-opacity:0.2" />    <rect ry="5" x="725" y="5" width="90" height="NaN" style="stroke:none;fill:black;fill-opacity:0.2" />
+        <path d="M 90 31 C 110 31 110 31 130 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 90 30 C 110 30 110 30 130 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 210 31 C 230 31 230 31 250 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 210 30 C 230 30 230 30 250 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 450 81 C 470 81 470 31 490 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 450 80 C 470 80 470 30 490 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 570 31 C 590 31 590 31 610 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 570 30 C 590 30 590 30 610 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 330 31 C 410 31 410 296 490 296" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 330 30 C 410 30 410 295 490 295" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 570 296 C 590 296 590 81 610 81" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 570 295 C 590 295 590 80 610 80" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 210 31 C 350 31 350 81 490 81" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 210 30 C 350 30 350 80 490 80" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 570 81 C 590 81 590 131 610 131" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 570 80 C 590 80 590 130 610 130" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 330 31 C 350 31 350 31 370 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 330 30 C 350 30 350 30 370 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 450 31 C 470 31 470 131 490 131" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 450 30 C 470 30 470 130 490 130" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 570 131 C 590 131 590 181 610 181" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 570 130 C 590 130 590 180 610 180" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 90 31 C 250 6 250 6 410 6 C 570 6 570 6 730 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 90 30 C 250 5 250 5 410 5 C 570 5 570 5 730 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 690 31 C 710 31 710 31 730 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 690 30 C 710 30 710 30 730 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 690 81 C 710 81 710 31 730 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 690 80 C 710 80 710 30 730 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 690 131 C 710 131 710 31 730 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 690 130 C 710 130 710 30 730 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 690 181 C 710 181 710 31 730 31" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 690 180 C 710 180 710 30 730 30" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+    
+        <path d="M 330 31 C 350 31 350 81 370 81" style="fill:none;stroke:black;stroke-opacity:0.4;stroke-width:3px;" />
+    
+        <path d="M 330 30 C 350 30 350 80 370 80" style="fill:none;stroke:rgb(100, 100, 100);stroke-width:3px;" />
+        <rect ry="3" x="10" y="12" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="10" y="10" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="130" y="12" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="130" y="10" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="250" y="12" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="250" y="10" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="490" y="12" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="490" y="10" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="610" y="12" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="610" y="10" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="490" y="277" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="490" y="275" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="610" y="62" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="610" y="60" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="490" y="62" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="490" y="60" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="610" y="112" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="610" y="110" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="370" y="12" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="370" y="10" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="490" y="112" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="490" y="110" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="610" y="162" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="610" y="160" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="730" y="12" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="730" y="10" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />    <rect ry="3" x="370" y="62" width="80" height="40" style="stroke:none;fill:black;fill-opacity:0.4" />    <rect ry="3" x="370" y="60" width="80" height="40" style="stroke:none;fill:rgb(200, 200, 200);fill-opacity:0.8" />
+    <text x="50" y="70" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(250,250,250);">
+        <tspan>TextureId(0) - (1024x1024)</tspan>
+    </text>
+    <rect ry="0" x="10" y="75" width="80" height="80" style="stroke:none;fill:black;fill-opacity:0.5" />    <rect ry="0" x="10.1" y="75.1" width="31.050001" height="15.425003" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />
+    <text x="170" y="70" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(250,250,250);">
+        <tspan>TextureId(1) - (2048x2048)</tspan>
+    </text>
+    <rect ry="0" x="130" y="75" width="80" height="80" style="stroke:none;fill:black;fill-opacity:0.5" />    <rect ry="0" x="130.1" y="75.1" width="7.612488" height="3.706253" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />
+    <text x="290" y="70" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(250,250,250);">
+        <tspan>TextureId(0) - (1024x1024)</tspan>
+    </text>
+    <rect ry="0" x="250" y="75" width="80" height="80" style="stroke:none;fill:black;fill-opacity:0.5" />    <rect ry="0" x="250.1" y="75.1" width="7.612488" height="3.706253" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />
+    <text x="410" y="120" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(250,250,250);">
+        <tspan>TextureId(1) - (2048x2048)</tspan>
+    </text>
+    <rect ry="0" x="370" y="125" width="80" height="80" style="stroke:none;fill:black;fill-opacity:0.5" />    <rect ry="0" x="370.1" y="129.00626" width="3.7062378" height="1.7531128" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />    <rect ry="0" x="374.00626" y="129.00626" width="3.7062378" height="1.7531128" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />
+    <text x="530" y="170" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(250,250,250);">
+        <tspan>TextureId(0) - (1024x1024)</tspan>
+    </text>
+    <rect ry="0" x="490" y="175" width="80" height="80" style="stroke:none;fill:black;fill-opacity:0.5" />    <rect ry="0" x="490.1" y="175.1" width="31.050018" height="23.237488" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />    <rect ry="0" x="490.1" y="198.5375" width="7.612488" height="7.612488" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />    <rect ry="0" x="497.9125" y="198.5375" width="38.86252" height="31.049988" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />
+    <text x="530" y="335" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(250,250,250);">
+        <tspan>TextureId(1337) - (0x0)</tspan>
+    </text>
+    <rect ry="0" x="490" y="340" width="NaN" height="NaN" style="stroke:none;fill:black;fill-opacity:0.5" />
+    <text x="650" y="220" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(250,250,250);">
+        <tspan>TextureId(1) - (2048x2048)</tspan>
+    </text>
+    <rect ry="0" x="610" y="225" width="80" height="80" style="stroke:none;fill:black;fill-opacity:0.5" />    <rect ry="0" x="610.1" y="225.1" width="19.331299" height="11.518738" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />    <rect ry="0" x="610.1" y="236.81876" width="21.284424" height="13.471863" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />    <rect ry="0" x="610.1" y="250.49063" width="3.7062988" height="3.7062378" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />    <rect ry="0" x="610.1" y="265.1" width="23.237549" height="15.424988" style="stroke:none;fill:rgb(50,70,180);fill-opacity:0.8" />
+    <text x="770" y="70" style="font-style:normal;font-weight:normal;font-size:5px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(250,250,250);">
+        <tspan>TextureId(123) - (0x0)</tspan>
+    </text>
+    <rect ry="0" x="730" y="75" width="NaN" height="NaN" style="stroke:none;fill:black;fill-opacity:0.5" />
+    <text x="50" y="22" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="50" y="34" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(0, 1)</tspan>
+    </text>
+
+    <text x="50" y="44" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(400x200)</tspan>
+    </text>
+
+    <text x="170" y="22" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="170" y="34" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(1, 0)</tspan>
+    </text>
+
+    <text x="170" y="44" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(200x100)</tspan>
+    </text>
+
+    <text x="290" y="22" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="290" y="34" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(1, 1)</tspan>
+    </text>
+
+    <text x="290" y="44" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(100x50)</tspan>
+    </text>
+
+    <text x="530" y="22" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="530" y="34" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(2, 0)</tspan>
+    </text>
+
+    <text x="530" y="44" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(400x300)</tspan>
+    </text>
+
+    <text x="650" y="22" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="650" y="34" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(2, 1)</tspan>
+    </text>
+
+    <text x="650" y="44" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(500x300)</tspan>
+    </text>
+
+    <text x="530" y="287" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="530" y="299" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(2, 2)</tspan>
+    </text>
+
+    <text x="530" y="309" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(400x350)</tspan>
+    </text>
+
+    <text x="650" y="72" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="650" y="84" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(2, 3)</tspan>
+    </text>
+
+    <text x="650" y="94" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(550x350)</tspan>
+    </text>
+
+    <text x="530" y="72" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="530" y="84" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(2, 4)</tspan>
+    </text>
+
+    <text x="530" y="94" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(100x100)</tspan>
+    </text>
+
+    <text x="650" y="122" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="650" y="134" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(2, 5)</tspan>
+    </text>
+
+    <text x="650" y="144" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(100x100)</tspan>
+    </text>
+
+    <text x="410" y="22" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="410" y="34" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(1, 2)</tspan>
+    </text>
+
+    <text x="410" y="44" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(100x50)</tspan>
+    </text>
+
+    <text x="530" y="122" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="530" y="134" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(2, 3)</tspan>
+    </text>
+
+    <text x="530" y="144" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(500x400)</tspan>
+    </text>
+
+    <text x="650" y="172" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="650" y="184" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(2, 4)</tspan>
+    </text>
+
+    <text x="650" y="194" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(600x400)</tspan>
+    </text>
+
+    <text x="770" y="22" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="770" y="34" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Render(0, 0)</tspan>
+    </text>
+
+    <text x="770" y="44" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(1000x1000)</tspan>
+    </text>
+
+    <text x="410" y="72" style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;">
+        <tspan></tspan>
+    </text>
+
+    <text x="410" y="84" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>Task: Copy</tspan>
+    </text>
+
+    <text x="410" y="94" style="font-style:normal;font-weight:normal;font-size:6px;line-height:1.25;font-family:sans-serif;stroke:none;text-anchor:middle;text-align:center;fill:rgb(50,50,50)">
+        <tspan>(100x50)</tspan>
+    </text>
+</svg>

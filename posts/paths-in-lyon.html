@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Nical">
+  <meta name="description" content="Posts and writings by Nical">
+
+
+<meta name="keywords" content="">
+
+  <title>
+    Eight million pixels and counting
+&ndash; Paths in Lyon  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <a href="/index.html">
+        <img src="/theme/images/nical-avatar.svg" alt="logo">
+      </a>
+      <h2><a href="/pages/about-me.html">Nical</a></h2>
+      <p></p>
+      <ul>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="/theme/images/mozgfx.svg" class="logo"></img></a>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="/index.html">Index</a>
+      | <a href="/archives.html">Archives</a>
+      | <a href="/pages/about-me.html">About me</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="/posts/paths-in-lyon.html">Paths in Lyon</a></h1>
+  </div>
+  <div class="article_text">
+    <p><a href="https://crates.io/crates/lyon"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon"></a>
+<a href="https://docs.rs/lyon"><img alt="doc" src="https://docs.rs/lyon/badge.svg"></a></p>
+<p>This is another post about lyon, a rust crate which helps you tessellate vector paths into triangle meshes that can be easily rendered on the GPU. Today I am going to focus on paths.</p>
+<h1>Paths</h1>
+<p>Paths describe the outline of arbitrary shapes. A lot of users of lyon just create simple polygons with straight line edges and no holes.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>But you can describe a lot more than that, for example with bézier curves:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">quadratic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">cubic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>A path isn't necessarily a single shape:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// A square..</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// .. and a triangle next to it.</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">30.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">25.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>You can also carve holes in shapes:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// A square..</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// .. and a smaller square inside of it, carving a hole.</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">8.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">8.0</span><span class="p">,</span><span class="w"> </span><span class="mf">8.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">8.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>To make life easier for people interacting with SVG or just used to a richer set of commands, there is an adapter wrapping a path builder and translating SVG's extended set of drawing commands into <code>PathBuilder</code>'s lower level set.' </p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">().</span><span class="n">with_svg</span><span class="p">();</span><span class="w"></span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">relative_line_to</span><span class="p">(</span><span class="n">vector</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">vertical_line_to</span><span class="p">(</span><span class="mf">10.0</span><span class="p">);</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">relative_arc_to</span><span class="p">(</span><span class="n">vector</span><span class="p">(</span><span class="mf">25.0</span><span class="p">,</span><span class="w"> </span><span class="mf">25.0</span><span class="p">),</span><span class="w"> </span><span class="n">Angle</span>::<span class="n">degrees</span><span class="p">(</span><span class="o">-</span><span class="mf">30.0</span><span class="p">),</span><span class="w"> </span><span class="n">ArgFlags</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">large_arc</span>: <span class="nc">false</span><span class="p">,</span><span class="w"> </span><span class="n">sweep</span>: <span class="nc">true</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="mf">50.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">25.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">relative_quadratic_bezier_to</span><span class="p">(</span><span class="n">vector</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">smooth_relative_quadratic_bezier_to</span><span class="p">(</span><span class="n">vector</span><span class="p">(</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="c1">// etc.</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Nothing too fancy here, it's the familiar interface you may have already worked with using SVG, cairo, skia, qpainter or some other piece of vector graphics software.</p>
+<h1>Iterating paths</h1>
+<p>This interface is kind of straightforward and for a lot of algorithms it corresponds to how the path is consumed:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="n">path</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">PathEvent</span>::<span class="n">Begin</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;begin a sub-path at {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">at</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">PathEvent</span>::<span class="n">Line</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;line from {:?} to {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">PathEvent</span>::<span class="n">Quadratic</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;quadratic bézier curve {:?} {:?} {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl1</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl2</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">PathEvent</span>::<span class="n">Cubic</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl1</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl2</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;cubic bézier curve {:?} {:?} {:?} {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl1</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl2</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">PathEvent</span>::<span class="n">End</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">last</span><span class="p">,</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">close</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">close</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;Close the sub-path with a line from {:?} to {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">last</span><span class="p">,</span><span class="w"> </span><span class="n">first</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;End the sub-path at {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">last</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Notice how the iterator's <code>PathEvent</code> is a bit different from the path building interface.</p>
+<ul>
+<li>It provides the starting endpoint of each segment (<code>from</code>) which was implicit in the building API. If you want to do anything useful while iterating over the edges of a path, you have to know about all endpoints of the edge. In some <a href="https://docs.rs/lyon_core/0.5.0/lyon_core/events/enum.PathEvent.html">Older versions</a> of lyon, the iterator would not provide with this endpoint and every algorithm had to manually keep track of the destination endpoint of each segment to know the starting endpoint of the next segment. it isn't very hard to do, but the same logic was duplicated enough times in lyon that I decided to simply do it once in the iterator instead.</li>
+<li>Instead of a <code>Close</code> event we have and <code>End</code> event with a boolean indicating whether the sub-path is closed. Some algorithms, such as the fill tessellator or the hatcher, need to conceptually close all sub-paths. It wouldn't be possible to fill an open path since it has no surface. To insert that closing edge you need to keep track of the starting endpoint of the current sub-path. Just like edge starting endpoints, it' not too bad, just store it in a variable every time the <code>Begin</code> comes up, but it's nice to have it done in a single place by the iterator. But this isn't all of it: the classic postscript-style path building API doesn't explicitly end paths that aren't closed:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="c1">// A move_to indicates the start of a new path, and implies the end of the current</span>
+<span class="c1">// one, even if we didn&#39;t end it explicitly.</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">30.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">25.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">));</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Algorithms iterating over paths therefore would need to keep track of whether a sub-path is active when running into a move-to event. Yet another thing duplicated a handful of times in lyon's code base, that was simplified by being handled before iteration, to the benefit of all algorithms consuming paths. Right now, when iterating one of lyon's path data structures, you are guaranteed that all sub-paths begin and end with a <code>PathEvent::Begin</code>/<code>PathEvent::End</code> pair.</p>
+<p>How can we guarantee this, though? What if a segment is added without starting the sub-path. What is the current position (the position of the starting end-point of the segment)?</p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">close</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// A segment, without starting a sub path!</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">quadartic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>or simply:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// First segment of the path without starting a sub path!</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">quadartic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>In the first case above, lyon considers that closing the previous sub-path resets the current position to where the closing edge ended, the starting position of the sub-path <code>(1.0, 1.0)</code>. In the second case, there isn't a very good answer. lyon currently defaults to <code>(0.0, 0.0)</code> in some of the path data structures, or panics in others. That isn't very satisfying. In the next version of lyon, the segment will be omitted but the rest of sub-path will still be built normally, starting at the end of the omitted path. Other vector graphics APIs deal with it in various ways: SVG considers the whole path invalid (empty),  skia always default to <code>(0.0, 0.0)</code> as the starting position of any sub-path without a move-to event, while Canvas2D and cairo insert a move to whatever next thing has an <code>x</code> and a <code>y</code> coordinate (for example the control point <code>(10.0, 0.0)</code> in the example above) which is my least favorite solution, but I am sure opinions differ on the topic.</p>
+<p>Whichever way one deals with this, it likely requires checking whether there is an open sub-path for each segment (not only when starting/ending a sub-path and when finishing the path). Bummer, but this cost is sunk by lyon's path builders and you don't have to worry too much about it.</p>
+<p>It's been bothering me for a while because while when you are loading some vector file format or user-generated content you want to handle edge cases as gracefully as possible, in a lot of other scenarios it would be better to have simple debug assertions in the path builder and provide a stricter but faster path building interface. In addition, since there are different ways to deal with these edge cases, some users of lyon may end up wrapping the path builder into their own, to sanitize paths so that they strictly adhere to a particular specification like SVG, Canvas2D or skia's path building API.</p>
+<p>In addition, lyon recently added the possibility of attaching custom attributes to path endpoints, as well as associating endpoints with IDs so that algorithms such as the tessellators can generate vertices with any kind of data (vertex colors, texture coordinates, bone weights, etc.).</p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+<span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;Moved to {:?}, added a line to {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">[</span><span class="n">a</span><span class="p">],</span><span class="w"> </span><span class="n">path</span><span class="p">[</span><span class="n">b</span><span class="p">]);</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder_with_attributes</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]);</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]);</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+<span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;Moved to {:?} with attributes {:?}, added a line to {:?} with attributes {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">[</span><span class="n">a</span><span class="p">],</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="n">path</span><span class="p">[</span><span class="n">b</span><span class="p">],</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">b</span><span class="p">));</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Returning endpoint ids makes sense for commands like <code>quadratic_bezier_to</code> which add a single endpoint, what about arcs that are internally approximated with multiple bézier curves?</p>
+<h1>Simplifying the code and API</h1>
+<p>Like most code, <code>lyon_path</code> went through a lot of iterations and exploration, inevitably adding complexity here and there. I decided to go though API again and see if I could remove features and abstractions that I think didn't turn out to be useful.</p>
+<h2>The traits</h2>
+<p>It is always so tempting to add traits just because it feels like it makes sense. </p>
+<p><a href="https://docs.rs/lyon_path/0.15.2/lyon_path/builder/index.html#traits">Today</a>, lyon_path has </p>
+<ul>
+<li><a href="https://docs.rs/lyon_path/0.15.2/lyon_path/builder/trait.FlatPathBuilder.html"><code>FlatPathBuilder</code></a> which only has move-to, line-to and close commands.</li>
+<li><a href="https://docs.rs/lyon_path/0.15.2/lyon_path/builder/trait.FlatPathBuilder.html"><code>PathBuilder</code></a> which adds quadratic béziers, cubic béziers and arcs on top of <code>FlatPathBuilder</code>. It is close to what the <code>Path</code> type can exactly represent, with arcs on top.</li>
+<li><a href="https://docs.rs/lyon_path/0.15.2/lyon_path/builder/trait.SvgBuilder.html"><code>SvgBuilder</code></a> adding SVG's lot relative position and smooth commands, horizontal lines, vertical lines, etc. on top of <code>PathBuilder</code>.</li>
+<li><a href="https://docs.rs/lyon_path/0.15.2/lyon_path/builder/trait.PolygonBuilder.html"><code>PolygonBuilder</code></a> to build polygons from a slice of points. without bothering with move-to, close, etc.</li>
+<li><a href="https://docs.rs/lyon_path/0.15.2/lyon_path/builder/trait.Build.html"><code>Build</code></a> which is a separate trait so that its <code>build</code> method can return the <code>PathType</code> associated type, effectively preventing the the trait from being used as a trait object, without applying this restriction to the other traits.</li>
+</ul>
+<p>What do we really need in lyon?
+ - A way to abstract over the path type that is being built.
+ - Ideally place this abstraction so that sanitizing code doesn't need to be repeated for each path builder implementation.
+ - Be able to use path builders as trait objects while building arbitrary path types (the separate <code>Build</code> trait. Good, let's keep it).
+ - A way to easily interact with SVG content.</p>
+<p>The current trait hierarchy was introduced with sort of "feature levels" in mind. But in reality it isn't very useful to have an abstraction over builders that don't support curves, when lyon has all of the tools needed for a path data structure to approximate curves with line segments. Let's remove <code>FlatPathBuilder</code>.</p>
+<p>The next version of lyon will very likely have the following traits instead:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Isolating the builder was worth it. We can use the other traits as trait objects which</span>
+<span class="c1">// is valuable, so it stays.</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">Build</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span> <span class="nc">PathType</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Self</span>::<span class="n">PathType</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// The strict low-level path building API.</span>
+<span class="c1">// Very fast implementation for lyon&#39;s default path data structure, panics if sub-paths</span>
+<span class="c1">// aren&#39;t properly started/ended.</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">PathBuilder</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Begin/End matching the iterator API</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">begin</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">EndpointId</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">end</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">close</span>: <span class="kt">bool</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// The types of edges that are actually supported in lyon&#39;s path types.</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">line_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">EndpointId</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">quadratic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">EndpointId</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">cubic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl1</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl2</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">EndpointId</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// For performance reasons it is good to be able to hint at the builder implementation</span>
+<span class="w">    </span><span class="c1">// how much memory to pre-allocate.</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">reserve</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">_endpoints</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">_ctrl_points</span>: <span class="kt">usize</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="sd">/// Returns a builder that approximates all curves with sequences of line segments.</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">flattened</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">tolerance</span>: <span class="kt">f32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Flattened</span><span class="o">&lt;</span><span class="bp">Self</span><span class="o">&gt;</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="bp">Self</span>: <span class="nb">Sized</span> <span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">Flattened</span>::<span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">tolerance</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="sd">/// Returns a builder that applies a transfor to all points.</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">transformed</span><span class="o">&lt;</span><span class="n">T</span>: <span class="nc">Transform</span><span class="o">&gt;</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">transform</span>: <span class="kp">&amp;</span><span class="nc">T</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Transformed</span><span class="o">&lt;</span><span class="bp">Self</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="bp">Self</span>: <span class="nb">Sized</span> <span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">Transformed</span>::<span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">transform</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="sd">/// Returns a builder that approximates all curves with sequences of line segments.</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">with_svg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">WithSvg</span><span class="o">&lt;</span><span class="bp">Self</span><span class="o">&gt;</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="bp">Self</span>: <span class="nb">Sized</span> <span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">WithSvg</span>::<span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// Batteries-included API that you may be familiar with. Path data structures don&#39;t need to</span>
+<span class="c1">// implement it, an adapter is provided that lowers to the `PathBuilder`.</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">SvgPathBuilder</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">move_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">close</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">line_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">quadratic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">cubic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl1</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl2</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">relative_move_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Vector</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">relative_line_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Vector</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">relative_quadratic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl</span>: <span class="nc">Vector</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Vector</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">relative_cubic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl1</span>: <span class="nc">Vector</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl2</span>: <span class="nc">Vector</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Vector</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">smooth_cubic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl2</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">smooth_relative_cubic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">ctrl2</span>: <span class="nc">Vector</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Vector</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">smooth_quadratic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">smooth_relative_quadratic_bezier_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Vector</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">horizontal_line_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">x</span>: <span class="kt">f32</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">relative_horizontal_line_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span>: <span class="kt">f32</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">vertical_line_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">y</span>: <span class="kt">f32</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">relative_vertical_line_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span>: <span class="kt">f32</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">arc_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">radii</span>: <span class="nc">Vector</span><span class="p">,</span><span class="w"> </span><span class="n">x_rotation</span>: <span class="nc">Angle</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span>: <span class="nc">ArcFlags</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Point</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">relative_arc_to</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">radii</span>: <span class="nc">Vector</span><span class="p">,</span><span class="w"> </span><span class="n">x_rotation</span>: <span class="nc">Angle</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span>: <span class="nc">ArcFlags</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>: <span class="nc">Vector</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// other methods omitted.</span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// Putting it together:</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">flattened</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">transformed</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rotation</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">with_svg</span><span class="p">();</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Can we go further</p>
+<p>One thing that I didn't initially take into consideration, was on where in between these abstractions should we deal with all of these edge cases I described above (missing move-to commands, etc). Currently the answer is that it is dealt with below all abstractions, and the code is repeated over all builder types with various levels of consistency. That's not so great. What would be useful is an abstraction separating between strict zero-cost path building where the user is required to properly open and close sub-paths from sanitizing code that would interact with this it. Ideally this low-level trait would match the iteration API for consistency and stay true to what is happening under the hood. High level path building interfaces can be built on top of the low level path building trait. Users would opt into a more permissive and familiar API, and its associated cost.</p>
+<p>Isolating the <code>Build</code> trait was worthwhile, let's keep it.</p>
+<p>The polygon builder trait? Meh. No code in lyon need an abstraction for that (it doesn't mean the path builder types shouldn't have a method to add a polygon, we just don't need that abstraction, and anyone outside of lyon can trivially add it).</p>
+<p><code>SvgBuilder</code> or some kind of all-battery-included abstraction that helps with interacting with SVG content may be useful. I'm not fully decided yet, </p>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Wed 08 April 2020</p>
+    <p>Category: <a href="/category/lyon-rust.html">lyon, rust</a>
+    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Nicolas Silva.</p>
+    </div>
+  </main>
+</body>
+</html>
