@@ -27,6 +27,38 @@ img {
   max-width: 100%;
 }
 
+.svg-anim {
+  background-color: #686868;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 3px #404040;
+}
+
+.anim-timeline {
+  width: 90%;
+  margin: 0px 20px;
+}
+.anim-controls {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  padding-left: 5px;
+  padding-bottom: 5px;
+}
+
+.anim-text {
+  margin: 0px 20px 0px 0px;
+  color: white;
+}
+.frame-container>svg {
+  width: ;
+}
+.anim-play {
+  margin-left:5px;
+}
+
 aside div#user_meta a img {
   max-height: 300px;
 }
