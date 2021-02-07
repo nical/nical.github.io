@@ -27,13 +27,13 @@ img {
   max-width: 100%;
 }
 
-.svg-anim {
+.anim-player {
   background-color: #686868;
   margin-left: auto;
   margin-right: auto;
   border-radius: 5px;
   overflow: hidden;
-  box-shadow: 0 3px #404040;
+  box-shadow: 0 4px #404040;
 }
 
 .anim-timeline {
@@ -47,6 +47,33 @@ img {
   padding-left: 5px;
   padding-bottom: 5px;
 }
+.anim-control-button {
+  line-height: 0%;
+  border-radius: 0px;
+  border-style: none;
+  border-bottom-style: solid;
+  background-color: #d0d0d0;
+  border-color: #9f9c9c;
+}
+.anim-control-left {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.anim-control-right {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+button.anim-control-button:hover {
+  background-color: #ffffff;
+  border-color: #d0d0d0;
+}
+
+button.anim-control-button:active {
+  background-color: #99b7ff;
+  border-color: #3f8aff;
+}
+
 
 .anim-text {
   margin: 0px 20px 0px 0px;

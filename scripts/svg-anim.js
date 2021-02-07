@@ -2,7 +2,7 @@ window.addEventListener("load", function(){
 
     console.log("Loading SVG animations");
 
-    var items = document.getElementsByClassName("svg-anim");
+    var items = document.getElementsByClassName("anim-player");
 
     for (item of items) {
         var src = item.getAttribute("file_name");
@@ -18,13 +18,13 @@ window.addEventListener("load", function(){
 
         console.log(" - Animated SVG: " + src + " frames: " + num_frames);
 
-        item.svg_frames = [];
+        item.anim_frames = [];
         for (i = 0; i < num_frames; i++) {
             // Load each frame into an image element.
             var img = document.createElement("img");
-            img.src = src + "-" + i + ".svg";
+            img.src = src.replace("$", i);
 
-            item.svg_frames.push(img);
+            item.anim_frames.push(img);
         }
 
         make_anim_viewer(src, num_frames, item);
@@ -32,7 +32,7 @@ window.addEventListener("load", function(){
 });
 
 function make_anim_viewer(name, num_frames, parent_container) {
-    var frames = parent_container.svg_frames;
+    var frames = parent_container.anim_frames;
     console.log("creating viewer, ", frames.length, " frames /", num_frames);
 
     var frame_container = document.createElement("div");
@@ -67,18 +67,22 @@ function make_anim_viewer(name, num_frames, parent_container) {
 
     timeline.oninput = update_frame;
 
-    let play_symbol = "&#x23f5;";
-    let pause_symbol = "&#x23f8;";
+    let play_icon = make_play_icon();
+    let pause_icon = make_pause_icon();
+
     var play_button = document.createElement("button");
+    play_button.classList.add("anim-control-button");
+    play_button.classList.add("anim-control-left");
+    play_button.classList.add("anim-control-right");
     play_button.classList.add("anim-play");
-    play_button.innerHTML = play_symbol;
+    play_button.appendChild(play_icon);
     parent_container.playing = false;
     play_button.onclick = function() {
         parent_container.playing = !parent_container.playing;
         if (parent_container.playing) {
-            play_button.innerHTML = pause_symbol;
+            play_button.firstChild.replaceWith(pause_icon);
         } else {
-            play_button.innerHTML = play_symbol;
+            play_button.firstChild.replaceWith(play_icon);
         }
 
 
@@ -96,7 +100,9 @@ function make_anim_viewer(name, num_frames, parent_container) {
 
 
     var prev_button = document.createElement("button");
-    prev_button.innerHTML = "&#129092;";
+    prev_button.classList.add("anim-control-button");
+    prev_button.classList.add("anim-control-left");
+    prev_button.appendChild(make_prev_icon());
     prev_button.onclick = function() {
         if (timeline.value > 0) {
             parent_container.playing = false;
@@ -106,7 +112,9 @@ function make_anim_viewer(name, num_frames, parent_container) {
     };
 
     var next_button = document.createElement("button");
-    next_button.innerHTML = "&#129094;";
+    next_button.appendChild(make_next_icon());
+    next_button.classList.add("anim-control-button");
+    next_button.classList.add("anim-control-right");
     next_button.onclick = function() {
         if (timeline.value < num_frames - 1) {
             parent_container.playing = false;
@@ -127,4 +135,35 @@ function make_anim_viewer(name, num_frames, parent_container) {
     update_frame();
 
     parent_container.timeline = timeline;
+}
+
+function svg_element_from_text(src) {
+    var element = document.createElement("svg");
+    element.innerHTML = src;
+    return element;
+
+}
+
+function make_play_icon() {
+    return svg_element_from_text(
+        '<svg style="width:24px;height:24px" viewBox="0 0 24 24"> <path fill="black" d="M8,5.14V19.14L19,12.14L8,5.14Z" /> </svg>'
+    );
+}
+
+function make_pause_icon() {
+    return svg_element_from_text(
+        '<svg style="width:24px;height:24px" viewBox="0 0 24 24"> <path fill="currentColor" d="M14,19H18V5H14M6,19H10V5H6V19Z" /> </svg>'
+    );
+}
+
+function make_next_icon() {
+    return svg_element_from_text(
+        '<svg style="width:24px;height:24px" viewBox="0 0 24 24"> <path fill="currentColor" d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z" /> </svg>'
+    );
+}
+
+function make_prev_icon() {
+    return svg_element_from_text(
+        '<svg style="width:24px;height:24px" viewBox="0 0 24 24"> <path fill="currentColor" d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z" /> </svg>'
+    );
 }
