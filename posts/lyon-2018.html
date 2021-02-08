@@ -93,7 +93,6 @@ This was simple to implement since it maps to how the path is stored, but pretty
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
-
 <p>And now looks like this:</p>
 <div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">PathEvent</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">MoveTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span><span class="w"></span>
@@ -103,7 +102,6 @@ This was simple to implement since it maps to how the path is stored, but pretty
 <span class="w">    </span><span class="c1">// etc.</span>
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
-
 
 <p>In other words, I shifted the burden of tracking this information from the user to <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/struct.Iter.html">the iterator</a> implementation by making path events contain the actual segments and by providing the closing segment in <code>PathEvent::Close(LineSegment&lt;f32&gt;)</code>.</p>
 <p>I also removed <code>PathSegment::Arc</code> (elliptic arcs automatically get approximated with a sequence of cubic bézier curves) and simplified the <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/iterator/trait.PathIterator.html"><code>PathIterator</code> trait</a> which is now a simple extension trait implemented for all <code>Iterator&lt;Item = PathEvent&gt;</code>.</p>

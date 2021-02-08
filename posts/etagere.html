@@ -100,7 +100,6 @@ The main idea behind it can be explained simply: "Maintain a list of free rectan
 <span class="w">    </span><span class="n">writeln</span><span class="o">!</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">EndSvg</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w"></span>
 </code></pre></div>
 
-
 <p>So many useful visualizations can be easily built out of simple colored rectangles and text and there's other primitives provided by svg_fmt. Rectangles were all I needed in guillotiere.</p>
 <p>You can look at <a href="https://github.com/nical/rust_debug/blob/492600cac47f64bcadaf9ad037ed64c5fecc8e63/svg_fmt/src/svg.rs">how simple the svg_fmt code is</a>. It has become a dependency to most of the things I've worked on lately, including WebRender which uses it to dump visualizations of texture atlases and the render graph.</p>
 <p><img alt="Render graph visualization" src="/images/atlas/rendergraph.svg"></p>
@@ -132,7 +131,6 @@ $ guillotiere deallocate r1 --svg <span class="m">02</span>.svg
 
 etc...
 </code></pre></div>
-
 
 <p>At any time in that sequence of commands I can open the <code>atlas.ron</code> file and read the state of the atlas as if I was in a debugger, can also copy it around to save the state in a way that almost feels as powerful as using <a href="https://rr-project.org/">record-and-replay debugging</a>.</p>
 <h2>Fuzzing</h2>
@@ -178,7 +176,6 @@ atlas allocate <span class="m">15</span> <span class="m">15</span> -n <span clas
 <span class="c1"># ... Tens of thousands of lines like the above.</span>
 </code></pre></div>
 </td></tr></table>
-
 <p>I would first run the program to set some initial parameters, for example <code>atlas init tiled 2048 2048</code>, then run the scripts to replay some workloads. The scripts dumps some snapshots in SVG format at various fixed points. So that I could compare how different algorithms look at the same steps of the the same workloads.</p>
 <p>The program would also record various stats such as size distributions, the highest number of allocated items at any given step or the amount of wasted space coming from the allocation strategy.</p>
 <h2>The slab allocator</h2>

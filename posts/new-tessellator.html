@@ -94,7 +94,6 @@
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
-
 <p>This doesn't sound like much but it is a major shift in how the algorithm is organized. This alone required a rewrite and it paid off.</p>
 <p>Another key aspect of the new design was avoiding to rely on prior events when information can be reconstructed locally. In other words try hard not to have invalid state accumulate and contaminate subsequent steps of the algorithm.</p>
 <p>I am sure that bugs will be found as it always goes with any new non-trivial piece of code. It'll be wise to take the claims I made about robustness with a grain of salt until the code has had a chance to be used in more places and pass the test of time. I have let the fuzzer run on 4 of cores of a beefy desktop for about 48 hours and it didn't find any panic. That's already a lot more robust than the previous tessellator, at least with the family of bugs that the fuzzer is good at finding. I am also confident that it will be much easier to fix upcoming issues with the new algorithm.</p>

@@ -124,7 +124,6 @@
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
-
 <p>Et voilà! With a fairly small amount of code you can create a path and generate the vertex/index buffers that you will be able to easily render on the GPU with glium, gfx-rs, vulkano, OpenGL, or what have you.</p>
 <p>From there to pixels on your screen, it can be very simple or very complicated, that's really up to your rendering engine. You can have a look at <a href="https://github.com/nical/lyon/tree/master/examples">the examples</a> in the repository to get an idea. Lyon doesn't provide a renderering engine (yet), although it is something that I want to explore eventually.</p>
 <h2>What else is there in lyon?</h2>
@@ -155,7 +154,6 @@
 <span class="p">});</span><span class="w"></span>
 </code></pre></div>
 
-
 <p>If you only need this and like minimal dependencies, just do <code>extern crate lyon_geom;</code> instead of <code>use lyon::geom;</code>.</p>
 <h3>lyon::path</h3>
 <p><a href="https://crates.io/crates/lyon_path"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon_path"></a>
@@ -173,7 +171,6 @@
 <span class="kd">let</span><span class="w"> </span><span class="n">path1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
 </code></pre></div>
 
-
 <div class="highlight"><pre><span></span><code><span class="c1">// This builder offers the full set of SVG path commands, and translates</span>
 <span class="c1">// them into absolute coordinates since the default path data structure</span>
 <span class="c1">// doesn&#39;t support relative coordinates.</span>
@@ -183,7 +180,6 @@
 <span class="n">builder</span><span class="p">.</span><span class="n">smooth_relative_cubic_bezier_to</span><span class="p">(</span><span class="n">vector</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">),</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">));</span><span class="w"></span>
 <span class="kd">let</span><span class="w"> </span><span class="n">path2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
 </code></pre></div>
-
 
 <div class="highlight"><pre><span></span><code><span class="c1">// This one automatically flattens the path (approximates curves with</span>
 <span class="c1">// a sequence of line_to commands) using 0.01 as tolerance threshold</span>
@@ -204,7 +200,6 @@
 <span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">().</span><span class="n">with_svg</span><span class="p">().</span><span class="n">flattened</span><span class="p">(</span><span class="mf">0.01</span><span class="p">);</span><span class="w"></span>
 </code></pre></div>
 
-
 <div class="highlight"><pre><span></span><code><span class="c1">// While the builder adapters APIs provide &quot;push&quot;-style conversions</span>
 <span class="c1">// between various path formats, the same kind of operations are</span>
 <span class="c1">// provided in a &quot;pull&quot;-style API with iterator adapters from the</span>
@@ -217,7 +212,6 @@
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
-
 <div class="highlight"><pre><span></span><code><span class="c1">// Place some dots at a regular interval along a path.</span>
 <span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RegularPattern</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">callback</span>: <span class="o">|</span><span class="n">position</span>: <span class="nc">Point</span><span class="p">,</span><span class="w"> </span><span class="n">_tangent</span><span class="p">,</span><span class="w"> </span><span class="n">_distance</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -229,7 +223,6 @@
 <span class="n">path</span><span class="p">.</span><span class="n">path_iter</span><span class="p">().</span><span class="n">flattened</span><span class="p">(</span><span class="mf">0.01</span><span class="p">).</span><span class="n">walk</span><span class="p">(</span><span class="n">start_offset</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">pattern</span><span class="p">);</span><span class="w"></span>
 </code></pre></div>
 
-
 <p>I would like to evolve this crate into a sort of swiss-army-knife of path manipulations, similar to the features <a href="https://github.com/paperjs/paper.js/">paperjs</a> offers, for example applying boolean operations to paths, computing convex hulls, etc.</p>
 <p>Like before, if you only want to play with paths without tessellating themyou can do <code>extern crate lyon_path;</code> instead of <code>use lyon::path;</code>.</p>
 <h3>lyon::svg</h3>
@@ -240,7 +233,6 @@
 <span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">svg</span>::<span class="n">path_utils</span>::<span class="n">build_path</span><span class="p">(</span><span class="n">svg_builder</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="s">&quot;M 0 0 L 10 0 L 10 10 L 0 10 z&quot;</span><span class="p">);</span><span class="w"></span>
 </code></pre></div>
 
-
 <h3>lyon_tess2</h3>
 <p><a href="https://crates.io/crates/lyon_extra"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon_tess2"></a>
 <a href="https://docs.rs/lyon_extra"><img alt="doc" src="https://docs.rs/lyon_tess2/badge.svg"></a> -</p>
@@ -250,13 +242,11 @@
 <div class="highlight"><pre><span></span><code>lyon/cli/ $ cargo run --  show -i ../assets/logo.path --fill --stroke --tolerance <span class="m">0</span>.01
 </code></pre></div>
 
-
 <p><img alt="screenshot" src="/images/lyon-cli-screenshot.png"></p>
 <div class="highlight"><pre><span></span><code>lyon/cli/ $ cargo run --  tessellate <span class="s2">&quot;M 0 0 L 1 0 L 1 1 L 0 1 Z&quot;</span> --fill
 vertices: <span class="o">[(</span><span class="m">0</span>, <span class="m">0</span><span class="o">)</span>, <span class="o">(</span><span class="m">1</span>, <span class="m">0</span><span class="o">)</span>, <span class="o">(</span><span class="m">0</span>, <span class="m">1</span><span class="o">)</span>, <span class="o">(</span><span class="m">1</span>, <span class="m">1</span><span class="o">)]</span>
 indices: <span class="o">[</span><span class="m">1</span>, <span class="m">0</span>, <span class="m">2</span>, <span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span><span class="o">]</span>
 </code></pre></div>
-
 
 <h2>What's next?</h2>
 <p>There are many things that I'd like to see happening in the project, and it will certainly take a long time for most of them to concretise as time is a scarse resource.</p>
