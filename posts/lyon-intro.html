@@ -3,11 +3,11 @@
 
 <head>
   <!-- ## for client-side less
-  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
+  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
   <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
   -->
-  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
-  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
 
   <meta charset="utf-8" />
@@ -15,6 +15,7 @@
   <meta name="author" content="Nical">
   <meta name="description" content="Posts and writings by Nical">
 
+  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
 
 <meta name="keywords" content="">
 
@@ -27,16 +28,16 @@
 <body>
   <aside>
     <div id="user_meta">
-      <a href="/index.html">
-        <img src="/theme/images/nical-avatar.svg" alt="logo">
+      <a href="https://nical.github.io/index.html">
+        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
       </a>
-      <h2><a href="/pages/about-me.html">Nical</a></h2>
+      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
       <p></p>
       <ul>
-        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="/theme/images/mastodon.svg" class="logo"></img></a>
-        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="/theme/images/twitter.svg" class="logo"></img></a>
-        <a href="https://github.com/nical" target="_blank"><img src="/theme/images/github.svg" class="logo"></img></a>
-        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="/theme/images/mozgfx.svg" class="logo"></img></a>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
       </ul>
     </div>
   </aside>
@@ -44,25 +45,26 @@
   <main>
     <header>
       <p>
-      <a href="/index.html">Index</a>
-      | <a href="/archives.html">Archives</a>
-      | <a href="/pages/about-me.html">About me</a>
+      <a href="https://nical.github.io/index.html">Index</a>
+      | <a href="https://nical.github.io/archives.html">Archives</a>
+      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
+      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
       </p>
     </header>
 
 <article>
   <div class="article_title">
-    <h1><a href="/posts/lyon-intro.html">Introduction to lyon: 2D vector graphics rendering on the GPU in rust</a></h1>
+    <h1><a href="https://nical.github.io/posts/lyon-intro.html">Introduction to lyon: 2D vector graphics rendering on the GPU in rust</a></h1>
   </div>
   <div class="article_text">
     <p><a href="https://crates.io/crates/lyon"><img alt="crate" src="https://meritbadge.herokuapp.com/lyon"></a>
 <a href="https://docs.rs/lyon"><img alt="doc" src="https://docs.rs/lyon/badge.svg"></a></p>
 <p><a href="https://github.com/nical/lyon">Lyon</a> is a side-project that I have been working on for quite a while. The goal is to play with rendering 2D vector graphics on the GPU, and it's been a lot of fun so far. I haven't talked a lot about it online (except for a couple of reddit threads a year or two ago) so I figured it would be a good topic to get this blog started.</p>
-<p><img alt="The logo" src="/images/lyon-logo.svg"></p>
+<p><img alt="The logo" src="https://nical.github.io/images/lyon-logo.svg"></p>
 <p>In this post I'll talk very briefly about tessellators (lyon's biggest feature) and show a few code snippets to illustrate some of the things you can do with lyon today.</p>
 <h2>Tessellation</h2>
 <p>Path tessellation (or triangulation), in a nutshell, is taking a path (for example a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D">canvas</a> or <a href="https://www.w3.org/TR/SVG/paths.html#PathData">SVG</a> path) and approximating it with a set of triangles (like the way we usually represent 3d models but in 2d). While the output of the tessellator is customizable, lyon is pretty much designed for generating vertex and index buffers, which anyone working with low level graphics APIs should be familiar with. As a result we obtain geometry in a format that is very easy to work with on the GPU using the same techniques used for 3D graphics.</p>
-<p><img alt="tessellated shape" src="/images/lyon-logo-tessellated.png"></p>
+<p><img alt="tessellated shape" src="https://nical.github.io/images/lyon-logo-tessellated.png"></p>
 <h2>Monotone decomposition</h2>
 <p>So how do we go about tessellating a path? The three most common algorithms are <a href="https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf">ear-clipping</a>, <a href="http://www0.cs.ucl.ac.uk/staff/m.slater/Teaching/CG/1997-98/Solutions/Trap/">trapezoidal decomposition</a> and monotone decomposition. In lyon I went for the latter.</p>
 <p>Traditionally this algorithm is performed in three passes over the geometry:</p>
@@ -242,7 +244,7 @@
 <div class="highlight"><pre><span></span><code>lyon/cli/ $ cargo run --  show -i ../assets/logo.path --fill --stroke --tolerance <span class="m">0</span>.01
 </code></pre></div>
 
-<p><img alt="screenshot" src="/images/lyon-cli-screenshot.png"></p>
+<p><img alt="screenshot" src="https://nical.github.io/images/lyon-cli-screenshot.png"></p>
 <div class="highlight"><pre><span></span><code>lyon/cli/ $ cargo run --  tessellate <span class="s2">&quot;M 0 0 L 1 0 L 1 1 L 0 1 Z&quot;</span> --fill
 vertices: <span class="o">[(</span><span class="m">0</span>, <span class="m">0</span><span class="o">)</span>, <span class="o">(</span><span class="m">1</span>, <span class="m">0</span><span class="o">)</span>, <span class="o">(</span><span class="m">0</span>, <span class="m">1</span><span class="o">)</span>, <span class="o">(</span><span class="m">1</span>, <span class="m">1</span><span class="o">)]</span>
 indices: <span class="o">[</span><span class="m">1</span>, <span class="m">0</span>, <span class="m">2</span>, <span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span><span class="o">]</span>
@@ -264,12 +266,12 @@ indices: <span class="o">[</span><span class="m">1</span>, <span class="m">0</sp
 <p>Now is a good time to underline that I didn't do all of this work alone. I want to thank again all the <a href="https://github.com/nical/lyon/wiki/Contributors#contributors">awesome individuals</a> who submitted contributions, big and small, to the project. This project is too large for a single person's spare time, and seeing people come and give a hand is the most rewarding and motivating thing. Also thanks a lot to everyone who is using lyon and reporting bugs!</p>
 <p>Want to join the fun? Check out the <a href="https://github.com/nical/lyon/blob/master/CONTRIBUTING.md">contribution guidelines</a>, get started on the <a href="https://github.com/nical/lyon/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22">easier issues</a>, and don't hesitate to ask any question on <a href="https://gitter.im/lyon-rs/Lobby">gitter</a> or irc in #rust-gamedev.
 I want this project to be as fun and welcoming as possible and I would love it to be more of a team effort than a one man show. If you are running into issues contribting, <a href="https://github.com/nical/lyon/issues/32">let me know</a>.</p>
-<p><img alt="lyon stickers photo" src="/images/lyon-stickers.jpg"></p>
+<p><img alt="lyon stickers photo" src="https://nical.github.io/images/lyon-stickers.jpg"></p>
 <p>There are lyon stickers which is the ultimate proof that the project is cool.</p>
   </div>
   <div class="article_meta">
     <p>Posted on: Mon 22 January 2018</p>
-    <p>Category: <a href="/category/lyon-rust.html">lyon, rust</a>
+    <p>Category: <a href="https://nical.github.io/category/lyon-rust.html">lyon, rust</a>
     </p>
   </div>
 

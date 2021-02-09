@@ -3,11 +3,11 @@
 
 <head>
   <!-- ## for client-side less
-  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
+  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
   <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
   -->
-  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
-  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
 
   <meta charset="utf-8" />
@@ -15,6 +15,7 @@
   <meta name="author" content="Nical">
   <meta name="description" content="Posts and writings by Nical">
 
+  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
 
 <meta name="keywords" content="">
 
@@ -27,16 +28,16 @@
 <body>
   <aside>
     <div id="user_meta">
-      <a href="/index.html">
-        <img src="/theme/images/nical-avatar.svg" alt="logo">
+      <a href="https://nical.github.io/index.html">
+        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
       </a>
-      <h2><a href="/pages/about-me.html">Nical</a></h2>
+      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
       <p></p>
       <ul>
-        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="/theme/images/mastodon.svg" class="logo"></img></a>
-        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="/theme/images/twitter.svg" class="logo"></img></a>
-        <a href="https://github.com/nical" target="_blank"><img src="/theme/images/github.svg" class="logo"></img></a>
-        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="/theme/images/mozgfx.svg" class="logo"></img></a>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
       </ul>
     </div>
   </aside>
@@ -44,15 +45,16 @@
   <main>
     <header>
       <p>
-      <a href="/index.html">Index</a>
-      | <a href="/archives.html">Archives</a>
-      | <a href="/pages/about-me.html">About me</a>
+      <a href="https://nical.github.io/index.html">Index</a>
+      | <a href="https://nical.github.io/archives.html">Archives</a>
+      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
+      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
       </p>
     </header>
 
 <article>
   <div class="article_title">
-    <h1><a href="/posts/new-tessellator.html">A new tessellator</a></h1>
+    <h1><a href="https://nical.github.io/posts/new-tessellator.html">A new tessellator</a></h1>
   </div>
   <div class="article_text">
     <p>This post is about <a href="https://github.com/nical/lyon">lyon</a>, a rust crate to tessellate arbitrary 2D shapes into triangle meshes that can be easily rendered on the GPU.</p>
@@ -114,11 +116,11 @@
 <h2>Fill rules</h2>
 <p>The old tessellator was pretty much written for the even-odd <a href="https://www.w3.org/TR/SVG/painting.html#WindingRule">fill rule</a> and adding more fill rules turned out to be difficult in hindsight. The new tessellator's algorithms was designed with this in mind and currently supports non-zero and even-odd. More fill rules can easily be added, but these two are the only ones in SVG standard.</p>
 <p>The image below shows the same path, filled with the even-odd (on the left) and non-zero (on the right) fill rules</p>
-<p><img alt="Fill rules" src="/images/lyon-evenodd-nonzero.png"></p>
+<p><img alt="Fill rules" src="https://nical.github.io/images/lyon-evenodd-nonzero.png"></p>
 <h2>Other goodies</h2>
 <p>The new tessellator can dynamically chose to traverse the geometry vertically or horizontally. As a rule of thumb it is usually better for performance to do a vertical sweep for shapes that are taller than wide, and do an horizontal sweep for shapes that are wider than tall.</p>
 <p>The image below shows the triangles generated with vertical (on the left) and horizontal (on the right) traversals of the same path.</p>
-<p><img alt="Vertical and horizontal traversals" src="/images/lyon-sweep-v-h.png"></p>
+<p><img alt="Vertical and horizontal traversals" src="https://nical.github.io/images/lyon-sweep-v-h.png"></p>
 <p>I spent a lot of time on the APIs related to building, storing and iterating over paths. This release has types to make working with simple <a href="https://docs.rs/lyon_path/0.15.0/lyon_path/polygon/index.html">polygons</a> nicer, as well as utilities to create <a href="https://docs.rs/lyon_path/0.15.0/lyon_path/commands/index.html">custom path data structures</a> which work with the tessellators.</p>
 <h1>What's the catch?</h1>
 <p>There are few caveats that I want to mention:</p>
@@ -138,7 +140,7 @@ I would also like to spend some time working <em>with</em> lyon rather than only
   </div>
   <div class="article_meta">
     <p>Posted on: Thu 26 December 2019</p>
-    <p>Category: <a href="/category/lyon-rust.html">lyon, rust</a>
+    <p>Category: <a href="https://nical.github.io/category/lyon-rust.html">lyon, rust</a>
     </p>
   </div>
 

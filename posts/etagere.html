@@ -3,11 +3,11 @@
 
 <head>
   <!-- ## for client-side less
-  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
+  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
   <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
   -->
-  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
-  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
 
   <meta charset="utf-8" />
@@ -15,6 +15,7 @@
   <meta name="author" content="Nical">
   <meta name="description" content="Posts and writings by Nical">
 
+  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
 
 <meta name="keywords" content="">
 
@@ -27,16 +28,16 @@
 <body>
   <aside>
     <div id="user_meta">
-      <a href="/index.html">
-        <img src="/theme/images/nical-avatar.svg" alt="logo">
+      <a href="https://nical.github.io/index.html">
+        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
       </a>
-      <h2><a href="/pages/about-me.html">Nical</a></h2>
+      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
       <p></p>
       <ul>
-        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="/theme/images/mastodon.svg" class="logo"></img></a>
-        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="/theme/images/twitter.svg" class="logo"></img></a>
-        <a href="https://github.com/nical" target="_blank"><img src="/theme/images/github.svg" class="logo"></img></a>
-        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="/theme/images/mozgfx.svg" class="logo"></img></a>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
       </ul>
     </div>
   </aside>
@@ -44,15 +45,16 @@
   <main>
     <header>
       <p>
-      <a href="/index.html">Index</a>
-      | <a href="/archives.html">Archives</a>
-      | <a href="/pages/about-me.html">About me</a>
+      <a href="https://nical.github.io/index.html">Index</a>
+      | <a href="https://nical.github.io/archives.html">Archives</a>
+      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
+      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
       </p>
     </header>
 
 <article>
   <div class="article_title">
-    <h1><a href="/posts/etagere.html">Improving texture atlas allocation in WebRender</a></h1>
+    <h1><a href="https://nical.github.io/posts/etagere.html">Improving texture atlas allocation in WebRender</a></h1>
   </div>
   <div class="article_text">
     <p>Lately I have been working on improving texture atlas allocation in WebRender. It isn't an outstanding technical feat, but the journey towards achieving this goal was quite pleasant. </p>
@@ -61,20 +63,20 @@
 <h1>Texture atlas allocation</h1>
 <p>In order to submit work to the GPU efficiently, WebRender groups as many drawing primitives as it can into what we call batches. A batch is submitted to the GPU as a single drawing command and has a few constraints. for example a batch can only reference a fixed set of resources (such as GPU buffers and textures). So in order to group as many drawing primitives as possible in a single batch we need to place as many drawing parameters as possible in few resources. When rendering text, WebRender pre-renders the glyphs before compositing them on the screen  so this means packing as many pre-rendered glyphs as possible into a single texture, and the same applies for rendering images and various other things.</p>
 <p>For a moment let's simplify the case of images and text and assume that it is the same problem: input images (rectangles) of various rectangular sizes that we need to pack into a larger rectangle. This is the job of the texture atlas allocator. Another common name for this is rectangle bin packing.</p>
-<p><img alt="Atlas allocation" src="/images/atlas/atlas-allocation.svg"></p>
+<p><img alt="Atlas allocation" src="https://nical.github.io/images/atlas/atlas-allocation.svg"></p>
 <p>Many in game and web development are used to packing many images into fewer assets. In most cases this can be achieved at build time Which means that the texture atlas allocator only needs to find a good layout for a fixed set of rectangles without supporting dynamic deallocation and allocation within the atlas at run time. I call this "static" atlas allocation as opposed to "dynamic" atlas allocation.</p>
 <p>There's a lot more literature out there about static than dynamic atlas allocation. I recommend reading <a href="http://pds25.egloos.com/pds/201504/21/98/RectangleBinPack.pdf"><em>A thousand ways to pack the bin</em></a> which is a very good survey of various static packing algorithms. Dynamic atlas allocation is unfortunately more difficult to implement while keeping good run-time performance. WebRender needs to maintain texture atlases into which items are added and removed over time. In other words we don't have a way around needing dynamic atlas allocation.</p>
 <h1>Chapter 1</h1>
 <p>A while back, WebRender had a naive implementation of the guillotine algorithm (explained in <a href="http://pds25.egloos.com/pds/201504/21/98/RectangleBinPack.pdf"><em>A thousand ways to pack the bin</em></a>). This algorithm strikes a good compromise between packing quality and implementation complexity.
 The main idea behind it can be explained simply: "Maintain a list of free rectangles, find one that can hold your allocation, split the requested allocation size out of it, creating up to two additional rectangles that are added back to the free list.". There is subtlety in which free rectangle to choose and how to split it, but the overall, the algorithm is built upon reassuringly understandable concepts.</p>
-<p><img alt="Guillotine allocation steps" src="/images/atlas/guillotine-alloc.svg"></p>
+<p><img alt="Guillotine allocation steps" src="https://nical.github.io/images/atlas/guillotine-alloc.svg"></p>
 <p>Deallocation could simply consist of adding the deallocated rectangle back to the free list, but without some way to merge back neighbor free rectangles, the atlas would quickly get into a fragmented stated with a lot of small free rectangles and can't allocate larger ones anymore.</p>
-<p><img alt="Fragmented state" src="/images/atlas/fragmented.svg"></p>
+<p><img alt="Fragmented state" src="https://nical.github.io/images/atlas/fragmented.svg"></p>
 <p>To address that, WebRender's implementation would regularly do a O(n²) complexity search to find and merge neighbor free rectangles, which was very slow when dealing with thousands of items. Eventually we stopped using the  guillotine allocator in systems that needed support for deallocation, replacing it with a very simple slab allocator which I'll get back to later in this post.</p>
 <p>I wasn't satisfied with moving to a worse allocator because of the run-time defragmentation issue, so as a side project I wrote a guillotine allocator that tracks rectangle splits in a tree in order to find and merge neighbor free rectangle in constant instead of quadratic time. I published it in the <a href="https://crates.io/crates/guillotiere">guillotiere</a> crate. I wrote about how it works in details in <a href="https://docs.rs/guillotiere/0.6.0/guillotiere/struct.AtlasAllocator.html">the documentation</a> so I won't go over it here. I'm quite happy about how it turned out, although I haven't pushed to use it in WebRender, mostly because I wanted to first see evidence that it would help and I already had evidence that many other things needed to be worked on.</p>
 <h2>Visualizing program state using SVG</h2>
 <p>guillotiere lets you dump a visualization of the atlas in SVG format.</p>
-<p><img alt="Guillotine allocation visualization" src="/images/atlas/guillotine-example-1.svg"></p>
+<p><img alt="Guillotine allocation visualization" src="https://nical.github.io/images/atlas/guillotine-example-1.svg"></p>
 <p>The image above shows the state of the atlas after a few allocations. Allocated space is represented in light blue while free space is in dark gray. It is much easier to work with than a list of coordinates in plain text. It was handy when developing and tuning the algorithm, but also when using it in other projects. While looking at the visual representation of the state animate you quickly develop an intuition of how the algorithm unfolds Concepts that are hard to explain in written form sometimes just "make sense" visually.</p>
 <p>Dumping visual representations in a .svg file is not only a powerful tool when exploring problem some spaces, it is also surprisingly simple to do. SVG is a straightforward XML type of format which is annoying to type by hand but effortless to generate with very simple helpers. Here is how it looks using a tiny helper crate called <a href="https://crates.io/crates/svg_fmt">svg_fmt</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="n">svg_fmt</span>::<span class="o">*</span><span class="p">;</span><span class="w"></span>
@@ -102,7 +104,7 @@ The main idea behind it can be explained simply: "Maintain a list of free rectan
 
 <p>So many useful visualizations can be easily built out of simple colored rectangles and text and there's other primitives provided by svg_fmt. Rectangles were all I needed in guillotiere.</p>
 <p>You can look at <a href="https://github.com/nical/rust_debug/blob/492600cac47f64bcadaf9ad037ed64c5fecc8e63/svg_fmt/src/svg.rs">how simple the svg_fmt code is</a>. It has become a dependency to most of the things I've worked on lately, including WebRender which uses it to dump visualizations of texture atlases and the render graph.</p>
-<p><img alt="Render graph visualization" src="/images/atlas/rendergraph.svg"></p>
+<p><img alt="Render graph visualization" src="https://nical.github.io/images/atlas/rendergraph.svg"></p>
 <p>My hope by now is that if you are working on problems that can be represented in 2D space, I've managed to convince you of how easily you can supplement or break free of reading text in your debugger/terminal. If anything, just <code>println!(r#"&lt;rect x="{}" y="{}" width="{}" height="{}" fill:rgb(100,0,0)" /&gt;""#, x, y, w, h);</code> your way into looking at your algorithms unfolding.</p>
 <h2>Making/testing/debugging a small rust crate</h2>
 <p>I had a great time writing guillotiere for several reasons. The problem itself had some nice properties:</p>
@@ -180,11 +182,11 @@ atlas allocate <span class="m">15</span> <span class="m">15</span> -n <span clas
 <p>The program would also record various stats such as size distributions, the highest number of allocated items at any given step or the amount of wasted space coming from the allocation strategy.</p>
 <h2>The slab allocator</h2>
 <p>What replaced WebRender's guillotine allocator in the texture cache was a very simple one based on fixed power-of-two square slabs, with a few special-cased rectangular slab sizes for tall and narrow items to avoid wasting too much space. The texture is split into 512 by 512 regions, each region is split into a grid of slabs with a fixed slab size per region. </p>
-<p><img alt="Slab allocation visualization" src="/images/atlas/slab-example-1.svg"></p>
+<p><img alt="Slab allocation visualization" src="https://nical.github.io/images/atlas/slab-example-1.svg"></p>
 <p>The image above shows the slab allocator in action on the image cache for a real browsing session, replayed in my little tool.</p>
 <p>This is a very simple scheme with very fast allocation and deallocation, however it tends to waste a lot of texture memory. For example allocating an 8x10 pixels glyph occupies a 16x16 slot, wasting more than twice the requested space. Ouch!
 In addition, since regions can allocate a single slab size, space can be wasted by having a region with few allocations because the slab size happens to be uncommon.</p>
-<p><img alt="Slab allocation wasted space" src="/images/atlas/slab-wasted-space.svg"></p>
+<p><img alt="Slab allocation wasted space" src="https://nical.github.io/images/atlas/slab-wasted-space.svg"></p>
 <p>Before replacing the slab allocator, I wanted to see if simple improvements could be enough. It wouldn't be wise to replace simple code with something with more complicated without seeing how far we can push the simple solution.</p>
 <h2>Improvements to the slab allocator</h2>
 <p>Images and glyphs used to be cached in the same textures. However we render images and glyphs with different shaders, so currently they can never be in the same rendering batches. Having a separate set of textures for images and glyphs therefore doesn't regress batching. On the other hand it provides with a few opportunities.
@@ -193,27 +195,27 @@ Not mixing images and glyphs means the glyph textures get more room for glyphs w
 <p>The first optimization came from noticing that glyphs are almost never larger than 128px. Having more and smaller regions, reduces the amount of atlas space that is wasted by partially empty regions, and allows us to hold more slab sizes at a given time so I reduced the region size from 512x512 to 128x128 in the glyph atlases. In the unlikely event that a glyph is larger than 128x128, it will go into the image atlas.</p>
 <p>Next, I recorded the allocations and deallocations browsing different pages, gathered some statistics about most common glyph sizes and noticed that on a low-dpi screen, a quarter of the glyphs would land in a 16x16 slab but would have fit in a 8x16 slab. In latin scripts at least, glyphs are usually taller than wide. Adding 8x16 and 16x32 slab sizes that take advantage of this helps a <em>lot</em>.
 I could have further optimized specific slab sizes by looking at the data I had collected, but the more slab sizes I would add, the higher the risk of regressing different workloads. This problem is called over-fitting. I don't know enough about the many non-latin scripts used around the world to trust that my testing workloads were representative enough, so I decided that I should stick to safe bets (such as "glyphs are usually small") and avoid piling up optimizations that might penalize some languages. Adding two slab sizes was fine (and worth it!) but I wouldn't add ten more of them.</p>
-<p><img alt="Slab allocator improvements" src="/images/atlas/slab-improvements.svg"></p>
+<p><img alt="Slab allocator improvements" src="https://nical.github.io/images/atlas/slab-improvements.svg"></p>
 <p>The image above shows the same (real-world) workload applied to both the original and improved slab allocators.</p>
 <p>At this point, I had nice improvements to glyph allocation using the slab allocator, but was starting to get a firm intuition that I was going to hit a ceiling trying to improve it further.</p>
 <h2>Shelf packing allocators</h2>
 <p>I experimented with two algorithms derived from the shelf packing allocation strategy, both of them released in the Rust crate <a href="https://crates.io/crates/etagere">etagere</a>. The general idea behind shelf packing  is to separate the 2-dimensional allocation problem into a 1D vertical allocator for the shelves and within each shelf, 1D horizontal allocation for the items.
 The atlas is initialized with no shelf. When allocating an item, we first find the shelf that is the best fit for the item vertically, if there is none or the best fit wastes too much vertical space, we add a shelf. Once we have found or added a suitable shelf, an horizontal slice of it is used to host the allocation.</p>
-<p><img alt="Shelf packing" src="/images/atlas/shelf-packing.svg"></p>
+<p><img alt="Shelf packing" src="https://nical.github.io/images/atlas/shelf-packing.svg"></p>
 <p>At a glance we can see that this scheme is likely to provide much better packing than the slab allocator. For one, items are tightly packed horizontally within the shelves. That alone saves a lot of space compared to the power-of-two slab widths. Most of the waste happens vertically, between an item and the top of its shelf. How much the shelf allocator wastes vertically depends on how the shelve heights are chosen. Since we aren't constrained to power-of-two size, we can also do much better than the slab allocator vertically.</p>
 <h3>The bucketed shelf allocator</h3>
 <p>The first shelf allocator I implemented was inspired from Mapbox's <a href="https://github.com/mapbox/shelf-pack/">shelf-pack</a> allocator written in JavaScript. It has an interesting bucketing strategy: items are accumulated into fixed size "buckets" that behave like a small bump allocators. Shelves are divided into a certain number of buckets and buckets are only freed when all elements are freed (via reference counting). The trade-off here is to keep atlas space occupied for longer in order to reduce the CPU cost of allocating and deallocating. Only the top-most shelf is removed when empty so consecutive empty shelves in the middle aren't merged until they become the top-most shelves, which can cause a bit of vertical fragmentation for long running sessions. When the atlas is full of (potentially empty) shelves the chance that a new item is too tall to fit into one of the existing shelves depends on how common the item height is. Glyphs tend to be of similar (small) heights so it works  out well enough.</p>
 <p>I added very limited support for merging neighbor empty shelves. When an allocation fails, the atlas iterates over the shelves and checks if there is a sequence of empty shelves that in total would be able to fit the requested allocation. If so, the first shelf of the sequence becomes the size of the sum, and the other shelves are squashed to zero height. It sounds like a band aid (it is) but the code is simple and it is working within the constraints that make the rest of the allocator very simple and fast. It's only a limited form of support for merging empty shelves but it was an improvement for workloads that contain both small and large items.</p>
-<p><img alt="Shelf packing" src="/images/atlas/glyphs-bucketed-shelf.svg"></p>
+<p><img alt="Shelf packing" src="https://nical.github.io/images/atlas/glyphs-bucketed-shelf.svg"></p>
 <p>The image above was generated using the command-line tool with one of the glyph cache workloads. We see fewer wide boxes rather than many thin boxes because the allocator internally doesn't keep track of each item rectangle individually, so we only see buckets filling up instead.</p>
 <p>This allocator worked quite well for the glyph texture (unsurprisingly, as Mapbox's implementation this was inspired from is used with their glyph cache). The bucketing strategy was problematic, however, with large images. The relative cost of keeping allocated space longer was higher with larger items. Especially with long running sessions, this allocator was good candidate for the glyph cache but not for the image cache.</p>
 <h3>The simple shelf allocator</h3>
 <p>The guillotine allocator was working rather well with images. I was close to just using it for the image cache and move on. However, having spent a lot of time looking at various allocations patterns, my intuition was that we could do better. Again, this is largely thanks to being able to visualize the algorithm via these neat little SVG dumps.</p>
 <p>It motivated experimenting with a second shelf allocator. This one is conceptually even simpler: A basic vertical 1D allocator for shelves with a basic horizontal 1D allocator per shelf. Since all items are managed individually, they are deallocated eagerly which is the main advantage over the bucketed implementation. It is also why it is slower than the bucketed allocator, especially when the number of items is high. This allocator also has full support for merging/splitting empty shelves wherever they are in the atlas.</p>
-<p><img alt="A glyph packing workload" src="/images/atlas/glyphs-shelf.svg"></p>
+<p><img alt="A glyph packing workload" src="https://nical.github.io/images/atlas/glyphs-shelf.svg"></p>
 <p>The image above was generated using the command-line tool with the same glyph cache workload as the previous image. This allocator tracks each individual item so we get a more precise picture. </p>
 <p>Unlike the Bucketed allocator, this one worked very well for the image workloads. For short sessions (visiting only a handful of web pages) it was not as tightly packed as the guillotine allocator, but after browsing for longer period of time, it had a tendency to better deal with fragmentation.</p>
-<p><img alt="An image packing workload" src="/images/atlas/img-shelf.svg"></p>
+<p><img alt="An image packing workload" src="https://nical.github.io/images/atlas/img-shelf.svg"></p>
 <p>The image above was generated using the command-line tool with an image cache workload. Notice how different the image workloads look (using the same texture size), with much fewer items and a mix of large and small items sizes.</p>
 <p>The implementation is very simple, scanning shelves linearly and then within the selected shelf another linear scan to find a spot for the allocation. I expected performance to scale somewhat poorly with high number of glyphs (we are dealing in the thousands of glyphs which arguably isn't that high), but the performance hit wasn't as bad I had anticipated, probably helped by mostly cache friendly underlying data-structure.</p>
 <h3>A few other experiments</h3>
@@ -221,7 +223,7 @@ The atlas is initialized with no shelf. When allocating an item, we first find t
 <p>The shelf allocators support arranging items in vertical shelves instead of horizontal ones. It can have an impact depending on the type of workload, for example if there is more variation in width than height for the requested allocations. As far as my testing went, it did not make a significant difference with workloads recorded in Firefox so I kept the default horizontal shelves.</p>
 <p>The allocators also support enforcing specific alignments in x and y (effectively, rounding up the size of allocated items to a multiple of the x and y alignment). This introduces a bit of wasted space but avoids leaving tiny holes smaller than the alignment size in the atlas. Some platforms also require a certain alignment for various texture transfer operations so it is useful to have this knob to tweak at our disposal. In the Firefox integration, we use different alignments for each type of atlas, favoring small alignments for atlases that mostly contain small items to keep the relative wasted space small.</p>
 <h1>Conclusion</h1>
-<p><img alt="A few more texture atlases for fun" src="/images/atlas/various-atlases.svg"></p>
+<p><img alt="A few more texture atlases for fun" src="https://nical.github.io/images/atlas/various-atlases.svg"></p>
 <p>The guillotine allocator is the best at keeping track of all available space and can provide the best packing of all algorithms I tried. The shelf allocators waste a bit of space by simplifying the arrangement into shelves, and the slab allocator wastes a lot of space for the sake of simplicity. On the other hand the guillotine allocator is the slowest when dealing with multiple thousands of items and can suffer from fragmentations in some of the workloads I recorded. Overall the best compromise was the simple shelf allocator which I ended up using in Firefox for both glyph and image textures in the cache (in both cases configured to have two columns per texture). The bucketed allocator is still a very reasonable option for glyphs and we could switch to it in the future if we feel we should trade some packing efficiency for allocation/deallocation performance.</p>
 <p>In other parts of WebRender, for short lived atlases (a single frame), the guillotine allocation algorithm is used.</p>
 <p>These observations are mostly workload-dependent, though. Workloads are rarely completely random so results may vary.</p>
@@ -245,7 +247,7 @@ The atlas is initialized with no shelf. When allocating an item, we first find t
   </div>
   <div class="article_meta">
     <p>Posted on: Thu 04 February 2021</p>
-    <p>Category: <a href="/category/webrender-rust.html">webrender, rust</a>
+    <p>Category: <a href="https://nical.github.io/category/webrender-rust.html">webrender, rust</a>
     </p>
   </div>
 

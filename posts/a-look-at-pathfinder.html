@@ -3,11 +3,11 @@
 
 <head>
   <!-- ## for client-side less
-  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
+  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
   <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
   -->
-  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
-  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
 
   <meta charset="utf-8" />
@@ -15,6 +15,7 @@
   <meta name="author" content="Nical">
   <meta name="description" content="Posts and writings by Nical">
 
+  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
 
 <meta name="keywords" content="">
 
@@ -27,16 +28,16 @@
 <body>
   <aside>
     <div id="user_meta">
-      <a href="/index.html">
-        <img src="/theme/images/nical-avatar.svg" alt="logo">
+      <a href="https://nical.github.io/index.html">
+        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
       </a>
-      <h2><a href="/pages/about-me.html">Nical</a></h2>
+      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
       <p></p>
       <ul>
-        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="/theme/images/mastodon.svg" class="logo"></img></a>
-        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="/theme/images/twitter.svg" class="logo"></img></a>
-        <a href="https://github.com/nical" target="_blank"><img src="/theme/images/github.svg" class="logo"></img></a>
-        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="/theme/images/mozgfx.svg" class="logo"></img></a>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
       </ul>
     </div>
   </aside>
@@ -44,15 +45,16 @@
   <main>
     <header>
       <p>
-      <a href="/index.html">Index</a>
-      | <a href="/archives.html">Archives</a>
-      | <a href="/pages/about-me.html">About me</a>
+      <a href="https://nical.github.io/index.html">Index</a>
+      | <a href="https://nical.github.io/archives.html">Archives</a>
+      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
+      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
       </p>
     </header>
 
 <article>
   <div class="article_title">
-    <h1><a href="/posts/a-look-at-pathfinder.html">A look at pathfinder</a></h1>
+    <h1><a href="https://nical.github.io/posts/a-look-at-pathfinder.html">A look at pathfinder</a></h1>
   </div>
   <div class="article_text">
     <p>This post is about <a href="https://github.com/pcwalton/pathfinder">pathfinder</a>, a GPU vector graphics renderer written in Rust by Patrick Walton as part of his work in the emerging technologies team at Mozilla. While I have followed this work very closely, I have contributed very little code to pathfinder so the credit really goes to Patrick.</p>
@@ -64,37 +66,37 @@
  - Decompose the path which as a whole is a very complex object to render, into may smaller and simpler objects.
  - Use tiles that are completely filled with an opaque pattern for occlusion culling.</p>
 <p>For example let's look at the following simple scene:</p>
-<p><img alt="A simple scene" src="/images/pathfinder/simple-scene.png"></p>
+<p><img alt="A simple scene" src="https://nical.github.io/images/pathfinder/simple-scene.png"></p>
 <p>And decompose it into tiles:</p>
-<p><img alt="Tiled simple scene" src="/images/pathfinder/tiled-simple-scene.png"></p>
+<p><img alt="Tiled simple scene" src="https://nical.github.io/images/pathfinder/tiled-simple-scene.png"></p>
 <p>In the scene, we have a number of opaque tiles that are very simple to render once we have identified that they are fully covered by a path.</p>
-<p><img alt="Tiled simple scene" src="/images/pathfinder/opaque-tiles.png"></p>
+<p><img alt="Tiled simple scene" src="https://nical.github.io/images/pathfinder/opaque-tiles.png"></p>
 <p>These are simply rendered by submitting a batch of instanced quads.</p>
 <p>A very good property of opaque tiles is that they completely hide what's under them, so we can trivially discard all blue tiles below an opaque green tile since we know it is fully occluded. This massively reduces overdraw in typical SVG drawings.</p>
 <p>The image below gives an idea of the overdraw of the famous GhostScript tiger. The lighter a pixel is, the more times it is written to with a traditional back to front rendering algorithm without occlusion culling.</p>
-<p><img alt="ghostscript tiger overdraw" src="/images/rustfest/tiger-overdraw.svg"></p>
+<p><img alt="ghostscript tiger overdraw" src="https://nical.github.io/images/rustfest/tiger-overdraw.svg"></p>
 <p>Because memory bandwidth is often the bottleneck when rendering vector graphics (especially at high resolutions), this occlusion culling is key to pathfinder's performance.</p>
 <p>Here is a view of the opaque tile pass for the GhostScript tiger in renderdoc:</p>
-<p><img alt="Tiger opaque tiles in renderdoc" src="/images/pathfinder/tiger-opaque-tiles.png"></p>
+<p><img alt="Tiger opaque tiles in renderdoc" src="https://nical.github.io/images/pathfinder/tiger-opaque-tiles.png"></p>
 <p>The opaque tile pass is very fast because it has zero overdraw and doesn't need any blending.</p>
 <h2>Alpha tiles</h2>
 <p>Back to our simple scene, this leaves us with the partially covered tiles to deal with:</p>
-<p><img alt="partial tiles of the simple scene" src="/images/pathfinder/simple-scene-partial-tiles.png"></p>
+<p><img alt="partial tiles of the simple scene" src="https://nical.github.io/images/pathfinder/simple-scene-partial-tiles.png"></p>
 <p>Opaque tiles are easy. It's good that we were able to detect them and render them with simple instanced quads, it even gives us a crude approximation of the final image, but the real challenge remains to render curves with high quality anti-aliasing.</p>
 <p>I will use the terms <em>alpha tiles</em> or <em>mask tiles</em> for tiles that contain edges. These are rendered in two passes. First a mask is generated in a float texture and the mask is used to render the tile on top of the opaque tiles.</p>
 <p>The float texture containing the masks for our simple scene might look something like this:</p>
-<p><img alt="mask tiles of the simple scene" src="/images/pathfinder/simple-scene-mask.png"></p>
+<p><img alt="mask tiles of the simple scene" src="https://nical.github.io/images/pathfinder/simple-scene-mask.png"></p>
 <h2>Rendering the masks</h2>
 <p>It is very common when dealing with vector graphics to separate the computation of coverage (whether a pixel is in or out of the path) shading (color of the pixel if it is covered).
 Stencil-and-cover rendering approaches are textbook examples of this, traditionally rendering triangle fans into the stencil buffer to produce a binary coverage mask (pixels are either in or out of the path). Because this doesn't let you express partial coverage per pixel, anti-aliasing is usually done using multi-sampling.</p>
 <p>Unfortunately, MSAA is quite slow on Intel integrated GPUs. Even on more powerful NVidia and AMD GPUs, MSAA is expensive with high sample counts, so people will rarely ask for more than 8 samples per pixel which provides something far from what I would call high quality anti-aliasing.</p>
 <p>Instead of rendering masks into an integer textures like the stencil buffer, pathfinder renders into a float texture and uses instanced quads instead of building triangle fans along the shape of the path.</p>
 <p>Each edge intersecting a tile is submitted as a quad that corresponds the bounding rectangle of the edge intersected with bounds of the tile and with the lower edge snapped to the bottom of the tile.</p>
-<p><img alt="Tile edge quad" src="/images/pathfinder/tile-mask-quad.png"></p>
+<p><img alt="Tile edge quad" src="https://nical.github.io/images/pathfinder/tile-mask-quad.png"></p>
 <p>That the shape of these quads might look somewhat arbitrary. Before we can make sense of it we have to look at what this quad actually renders. For each pixel the fragment shader writes 0 if it is fully above the edge, ±1 below the edge, or a value in between corresponding to the coverage of the pixel if it is near the edge. The output value is either positive or negative depending on the winding of the edge.</p>
-<p><img alt="Tile edge quad" src="/images/pathfinder/tile-mask-shader.png"></p>
+<p><img alt="Tile edge quad" src="https://nical.github.io/images/pathfinder/tile-mask-shader.png"></p>
 <p>The quads are rendered with additive blending, causing the contributions of each edge to accumulate in the tile's mask.</p>
-<p><img alt="Tile edge quad" src="/images/pathfinder/mask-coverage.png"></p>
+<p><img alt="Tile edge quad" src="https://nical.github.io/images/pathfinder/mask-coverage.png"></p>
 <p>Now why did we snap the bottom of the quads to the bottom of the tile?</p>
 <p>In a lot of vector graphics rendering approaches, it helps to imagine that we are casting a ray (usually horizontal) coming from far away and looking at intersections against the path to generate a winding number for each pixel along the ray.</p>
 <p>In pathfinder, the edge quads are equivalent to groups of vertical rays coming from the top of the tile, writing the contribution of a single edge to all pixels below the edge, down to the bottom of the tile. We could have also snapped the top of the quad the top of the tile, but since we don't need to consider pixels above the edge we save a few pixel's worth of work by only stating at the top of the edge's bounding box.</p>
@@ -103,9 +105,9 @@ Stencil-and-cover rendering approaches are textbook examples of this, traditiona
 <h2>What if the top of a tile starts is already inside of the path ?</h2>
 <p>In the previous illustration we took it from granted that the top of the tile was outside ( initial winding numbers are zeros), but this does not always hold true in practice as any edge above the tile can contribute as well.</p>
 <p>One solution could be to simply include all edges above the tile but for large drawing this can bring a lot of edges. So pathfinder handles this during the tiling phase on the CPU by tracking the winding number at the top of each tile and inserting a minimal amount of extra edges to compensate for the information that is lost by only considering edges inside of the tile.</p>
-<p><img alt="Tile edge quad" src="/images/pathfinder/mask-coverage-2.png"></p>
+<p><img alt="Tile edge quad" src="https://nical.github.io/images/pathfinder/mask-coverage-2.png"></p>
 <p>On the left side of the image below, the tiger is rendered and the triangles emitted during the compositing pass of the mask tiles are highlighted in yellow. On the right side the same pass is rendered on top of a black background to better see which parts of the drawing end up drawn with mask tiles. The image was produced thanks to renderdoc.</p>
-<p><img alt="Tile edge quad" src="/images/pathfinder/tiger-alpha-pass.png"></p>
+<p><img alt="Tile edge quad" src="https://nical.github.io/images/pathfinder/tiger-alpha-pass.png"></p>
 <h2>Summary</h2>
 <p>Piecing it all together:</p>
 <ul>
@@ -149,7 +151,7 @@ Currently pathfinder simply transforms stroke primitives into fill primitives on
   </div>
   <div class="article_meta">
     <p>Posted on: Tue 28 May 2019</p>
-    <p>Category: <a href="/category/pathfinder-rust.html">pathfinder, rust</a>
+    <p>Category: <a href="https://nical.github.io/category/pathfinder-rust.html">pathfinder, rust</a>
     </p>
   </div>
 
