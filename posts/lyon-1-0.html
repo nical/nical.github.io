@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="https://nical.github.io/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="https://nical.github.io/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Nical">
+  <meta name="description" content="Posts and writings by Nical">
+
+  <link href="https://nical.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eight million pixels and counting Atom" />
+
+<meta name="keywords" content="">
+
+  <title>
+    Eight million pixels and counting
+&ndash; Lyon 1.0  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <a href="https://nical.github.io/index.html">
+        <img src="https://nical.github.io/theme/images/nical-avatar.svg" alt="logo">
+      </a>
+      <h2><a href="https://nical.github.io/pages/about-me.html">Nical</a></h2>
+      <p></p>
+      <ul>
+        <a href="https://mastodon.gamedev.place/@Nical" target="_blank"><img src="https://nical.github.io/theme/images/mastodon.svg" class="logo"></img></a>
+        <a href="https://twitter.com/nicalsilva" target="_blank"><img src="https://nical.github.io/theme/images/twitter.svg" class="logo"></img></a>
+        <a href="https://github.com/nical" target="_blank"><img src="https://nical.github.io/theme/images/github.svg" class="logo"></img></a>
+        <a href="http://mozillagfx.wordpress.com/" target="_blank"><img src="https://nical.github.io/theme/images/mozgfx.svg" class="logo"></img></a>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="https://nical.github.io/index.html">Index</a>
+      | <a href="https://nical.github.io/archives.html">Archives</a>
+      | <a href="https://nical.github.io/pages/about-me.html">About me</a>
+      | <a href="https://nical.github.io/feeds/all.atom.xml">Atom</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title">
+    <h1><a href="https://nical.github.io/posts/lyon-1-0.html">Lyon 1.0</a></h1>
+  </div>
+  <div class="article_text">
+    <p>I am happy to finally announce the symbolic release of <code>lyon 1.0.0</code>.</p>
+<p><a href="https://crates.io/crates/lyon"><code>lyon</code></a> is a Rust crate providing a number of functionalities related to vector graphics and rendering them using polygon tessellation.
+The most interesting and complex piece is <a href="https://docs.rs/lyon_tessellation/1.0.0/lyon_tessellation/"><code>lyon_tessellation</code></a>'s <a href="https://docs.rs/lyon_tessellation/1.0.0/lyon_tessellation/struct.FillTessellator.html">fill tessellator</a> which produces a triangle mesh for any arbitrary vector path including shapes with holes and self-intersections. Some people prefer to only use the <a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/"><code>lyon_geom</code></a> crate which provides a lot of useful bézier curve math, or <a href="(https://docs.rs/lyon_path/1.0.0/lyon_path/)"><code>lyon_path</code></a> for building and iterating vector paths.</p>
+<p><img alt="The logo" src="https://nical.github.io/images/lyon-logo.svg"></p>
+<p align="center">
+  <a href="https://crates.io/crates/lyon">
+      <img src="https://img.shields.io/crates/v/lyon.svg" alt="crates.io">
+  </a>
+  <a href="https://travis-ci.org/nical/lyon">
+      <img src="https://img.shields.io/travis/nical/lyon/master.svg" alt="Travis Build Status">
+  </a>
+  <a href="https://docs.rs/lyon">
+      <img src="https://docs.rs/lyon/badge.svg" alt="documentation">
+  </a>
+</p>
+
+<p><code>lyon</code> first hit crates.io around mid 2016. There have been quite a few releases since then and the last release with breaking changes before <code>1.0.0</code> was in January 2021, so about a year and a half ago at the time of writing. The project is quite stable and I have been happy with the robustness of the tessellator for a while. So why not publish a <code>1.0.0</code> sooner?</p>
+<p>For a large part I, like many in the Rust ecosystem, have been guilty of a bit of "<code>1.0</code> semver shyness" there's this irrational fear of marking something <code>1.0</code> while it isn't perfect and it's API completely figured out. The reality of software is of course that nothing is ever perfect. The other reason, the more important one, is that I've always wanted this project to grow into a fully featured 2D renderer. It was my goal at the beginning and In the process I found that making a fast and robust tessellator is a project in its own right and I got side-tracked. I think of it as a good thing, I am sure that a decent portion of lyon's users are interested in some of the difficult low level components more than in a fully fledged renderer. I haven't given up on the idea, but realistically it will be far enough in the future that the version number should reflect how I think of the pieces that I have now.</p>
+<p>So there you have it. I'm taking this ridiculously tiny psychological leap and incrementing the major version to 1, giving me access to not two but three semver numbers to define versions. There will be a 2.0 eventually, and surely many other major versions after that.</p>
+<h1>What's new in 1.0?</h1>
+<h2>Variable width strokes</h2>
+<p>For this release, I wanted to implement something fun. The <a href="https://docs.rs/lyon_tessellation/1.0.0/lyon_tessellation/struct.StrokeTessellator.html">stroke tessellator</a> lets you specify a line width that is constant over the entire path. What if you wanted the line width to change along the path? In <code>lyon 0.17</code> you could approximate this effect by storing a line-width per endpoint using custom attributes and implementing your own <a href="https://docs.rs/lyon_tessellation/1.0.0/lyon_tessellation/geometry_builder/trait.StrokeGeometryBuilder.html"><code>StrokeGeometryBuilder</code></a> or <a href="https://docs.rs/lyon_tessellation/1.0.0/lyon_tessellation/geometry_builder/trait.StrokeVertexConstructor.html"><code>StrokeVertexConstructor</code></a> to move each vertex along its normal.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// lyon 0.17.0</span>
+
+<span class="c1">// We&#39;ll have a custom per-endpoint attribute in our path at index 0 to specify the width.</span>
+<span class="k">const</span><span class="w"> </span><span class="n">STROKE_WIDTH</span>: <span class="kt">usize</span> <span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// A custom vertex constructor for collecting the output of the stroke tessellator.</span>
+<span class="k">struct</span> <span class="nc">VariableWidthStrokeCtor</span><span class="p">;</span><span class="w"></span>
+<span class="k">impl</span><span class="w"> </span><span class="n">StrokeVertexConstructor</span><span class="o">&lt;</span><span class="p">[</span><span class="kt">f32</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">VariableWidthStrokeCtor</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">new_vertex</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">vertex</span>: <span class="nc">StrokeVertex</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="p">[</span><span class="kt">f32</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Grab the width. The tessellator automatically (and lazily) did the work of</span>
+<span class="w">        </span><span class="c1">// interpolating the custom attributes</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="n">interpolated_attributes</span><span class="p">()[</span><span class="n">STROKE_WIDTH</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Instead of using `vertex.position()` compute the adjusted position manually.</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="n">position_on_path</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="n">normal</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">position</span><span class="p">.</span><span class="n">to_array</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// Create a path with one custom attribute per endpoint.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder_width_attributes</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">40.0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]);</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">80.0</span><span class="p">,</span><span class="w"> </span><span class="mf">20.0</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">30.0</span><span class="p">]);</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">cubic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">220.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">150.0</span><span class="p">,</span><span class="w"> </span><span class="mf">50.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">250.0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">2.0</span><span class="p">]);</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">200.0</span><span class="p">,</span><span class="w"> </span><span class="mf">50.0</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">40.0</span><span class="p">]);</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">end</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">geometry</span>: <span class="nc">VertexBuffers</span><span class="o">&lt;</span><span class="p">[</span><span class="kt">f32</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="kt">u16</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexBuffers</span>::<span class="n">new</span><span class="p">();</span><span class="w"></span>
+<span class="n">stroke_tessellator</span><span class="p">.</span><span class="n">tessellate_path</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">path</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">StrokeOptions</span>::<span class="n">tolerance</span><span class="p">(</span><span class="mf">0.01</span><span class="p">).</span><span class="n">with_line_caps</span><span class="p">(</span><span class="n">LineCap</span>::<span class="n">Round</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">BuffersBuilder</span>::<span class="n">new</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">geometry</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">VariableWidthStrokeCtor</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="p">),</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+<p>Rendering the tessellated geometry of this example would look like:</p>
+<p><img alt="The logo" src="https://nical.github.io/images/variable-width-stroke/lyon-0-17.png"></p>
+<p>It works, kind of. See how the joins and caps don't look quite right? I would expect the outline to have a smoother curvature where the edges meet joins and caps like in the image below which was produced using <code>lyon 1.0</code>'s built-in support for variable line width. </p>
+<p><img alt="The logo" src="https://nical.github.io/images/variable-width-stroke/lyon-1-0.png"></p>
+<p>Implementing this feature required a bit of high school trigonometry and a full rewrite of the stroke tessellator.</p>
+<p>Some of the APIs have changed a bit so here is the equivalent code for <code>lyon 1.0</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// lyon 1.0.0</span>
+
+<span class="c1">// We&#39;ll have a custom per-endpoint attribute in our path at index 0 to specify the width.</span>
+<span class="k">const</span><span class="w"> </span><span class="n">STROKE_WIDTH</span>: <span class="nc">AttributeIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// We don&#39;t really need a custom constructor now that we only output the vertex position but</span>
+<span class="c1">// let&#39;s make one for the sake of completeness.</span>
+<span class="k">struct</span> <span class="nc">VariableWidthStrokeCtor</span><span class="p">;</span><span class="w"></span>
+<span class="k">impl</span><span class="w"> </span><span class="n">StrokeVertexConstructor</span><span class="o">&lt;</span><span class="p">[</span><span class="kt">f32</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">VariableWidthStrokeCtor</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">new_vertex</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">vertex</span>: <span class="nc">StrokeVertex</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Point</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">vertex</span><span class="p">.</span><span class="n">position</span><span class="p">().</span><span class="n">to_array</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// [...]</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">geometry</span>: <span class="nc">VertexBuffers</span><span class="o">&lt;</span><span class="p">[</span><span class="kt">f32</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="kt">u16</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexBuffers</span>::<span class="n">new</span><span class="p">();</span><span class="w"></span>
+<span class="n">stroke_tessellator</span><span class="p">.</span><span class="n">tessellate_path</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">path</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">StrokeOptions</span>::<span class="n">tolerance</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">.</span><span class="n">with_line_caps</span><span class="p">(</span><span class="n">LineCap</span>::<span class="n">Round</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">.</span><span class="n">with_variable_line_width</span><span class="p">(</span><span class="n">STROKE_WIDTH</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">BuffersBuilder</span>::<span class="n">new</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">geometry</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">VariableWidthStrokeCtor</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="p">),</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+<p>That said, there is an important shortcoming to this approach to variable line widths. The line width is interpolated very naively, using the bézier curve <code>t</code> parameter. This means that the interpolation will tend to vary more rapidly along curvier parts of the curve than around the more flat parts.</p>
+<p>But hey, it's still fun to play with, I hope it will be useful to some and I'll what the next iteration of this is based on the feedback I receive. Having the option to interpolate attributes linearly (based on distance instead of the curve parameter) could be a pretty nice feature for <code>lyon 2.0</code> or some other future release if there is interest for it, just like a more "serious" curve offsetting algorithm.</p>
+<h2>The path sampler in lyon_algorithms</h2>
+<p>Shout out to <a href="https://github.com/Mivik">@Mivik</a> for proposing and implementing this new feature. In previous versions of <code>lyon</code>, if you wanted to find a point at a certain distance along a path or sample positions at fixed intervals along a path, you could use the <a href="https://docs.rs/lyon_algorithms/1.0.0/lyon_algorithms/walk/index.html"><code>PathWalker</code></a> which goes through the path and fires callbacks at certain distances. Each time a path is walked the algorithm starts from the beginning. If you want to place many points along a path once it is great, however if you need to do thousands of randomly ordered queries on a very large path, this approach is inefficient.</p>
+<p>The idea behind path sampling is to create an acceleration data structure, called <a href="https://docs.rs/lyon_algorithms/1.0.0/lyon_algorithms/measure/struct.PathMeasurements.html"><code>PathMeasurements</code></a>, the creation of which has an important up-front cost (in the same ballpark as walking the path from the beginning to the end), but allows subsequent queries to be much faster than walking the path.</p>
+<p>As a bonus the path sampler can be configured to either sample at certain distances along the path, or sample at <em>normalized</em> distances (between zero and one where one means the end of the path).</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// PathMeasurements is expensive to build but easy to cache and allows the rest to be quite fast.</span>
+<span class="c1">// It is immutable so it could even be used concurrently on multiple threads.</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">measurements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PathMeasurements</span>::<span class="n">from_path</span><span class="p">(</span><span class="o">&amp;</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">tolerance</span><span class="p">);</span><span class="w"></span>
+<span class="c1">// PathSampler is a bit more temporary in the sense that it has a lifetime and has some mutable state.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">sampler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">measurements</span><span class="p">.</span><span class="n">create_sampler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">SampleType</span>::<span class="n">Normalized</span><span class="p">);</span><span class="w"></span>
+<span class="c1">// Let&#39;s build a path as a sub-range of the original one:</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">();</span><span class="w"></span>
+<span class="n">sampler</span><span class="p">.</span><span class="n">split_range</span><span class="p">(</span><span class="mf">0.</span><span class="mi">5</span><span class="o">..</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="p">);</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">second_half</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// And, of course, we can sample the path.</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sampler</span><span class="p">.</span><span class="n">sample</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span><span class="w"></span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;mid-point: {:?}, {:?}, {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sample</span><span class="p">.</span><span class="n">position</span><span class="p">(),</span><span class="w"> </span><span class="n">sample</span><span class="p">.</span><span class="n">tangent</span><span class="p">(),</span><span class="w"> </span><span class="n">sample</span><span class="p">.</span><span class="n">attributes</span><span class="p">());</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Lots of new goodies in lyon_geom</h2>
+<p>In no particular order:</p>
+<ul>
+<li>Helpers to modify <a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/struct.QuadraticBezierSegment.html#method.drag">quadratic</a> and <a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/struct.CubicBezierSegment.html#method.drag">cubic</a> bézier curves by dragging any point on the curve.</li>
+<li>Faster and more precise bézier curve <a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/struct.QuadraticBezierSegment.html#method.length">length</a> computation (once again implementing <a href="https://raphlinus.github.io/curves/2018/12/28/bezier-arclength.html">Raph Levien's fantastic research work</a>).</li>
+<li>A few helpers to split bézier curves into <a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/struct.QuadraticBezierSegment.html#method.for_each_x_monotonic">x</a> and <a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/quadratic_bezier/struct.QuadraticBezierSegment.html#method.for_each_y_monotonic">y</a>-monotonic sub-curves.</li>
+<li>Added <a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/struct.LineSegment.html#method.closest_point"><code>LineSegment::closest_point</code></a>/<a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/struct.LineSegment.html#method.distance_to_point"><code>distance_to_point</code></a>.</li>
+<li>Added <a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/struct.QuadraticBezierSegment.html#method.closest_point"><code>QuadraticBezierSegment::closest_point</code></a>/<a href="https://docs.rs/lyon_geom/1.0.0/lyon_geom/struct.QuadraticBezierSegment.html#method.distance_to_point"><code>distance_to_point</code></a>.</li>
+</ul>
+<h2>Miscellaneous other new features</h2>
+<ul>
+<li>A <a href="https://docs.rs/lyon_tessellation/1.0.0/lyon_tessellation/struct.BuffersBuilder.html#method.with_inverted_winding">helper</a> to invert the triangle winding produced by the tessellators.</li>
+<li>A <a href="https://docs.rs/lyon_algorithms/1.0.0/lyon_algorithms/rect/fn.to_axis_aligned_rectangle.html">function</a> to determine whether a path is shaped like an axis aligned rectangle.</li>
+<li><a href="https://docs.rs/lyon_path/1.0.0/lyon_path/struct.Path.html#method.reversed"><code>Path::reversed</code></a> is now implemented as an iterator.</li>
+</ul>
+<h1>Notable API changes</h1>
+<p>The rest of this post goes into some some API details. It is probably not a particularly fun read unless you are using some of <code>lyon</code>'s advanced features. You have been warned.</p>
+<h2>The PathBuilder API now includes custom attributes.</h2>
+<p>I did my best to avoid changing the whole API with this one, so it will hopefully not affect most users, unless they use or implement the <code>PathBuilder</code> trait manually.</p>
+<p>So what are custom attributes anyway? Custom attributes, also called "interpolated attributes" in some places, are a fixed number of <code>f32</code> values that can optionally associated with each endpoint in a path. They can be used to represent various things, such as our varying line width example above, colors, or whatever can be linearly interpolated between endpoints. The fill and stroke tessellators provide access to them when creating vertices and lazily interpolate them if needed for vertices that are along a curve or at the intersection between edges.</p>
+<p>One of my motivations with <code>lyon 1.0</code> was to get custom attributes better integrated with the various path manipulation abstractions and adapters. If a path data structure implements the <code>PathBuilder</code> trait, it automatically gets access to some generic functionalities such as flattening curves into line segments, applying transforms and other goodies. Before 1.0 <code>PathBuilder</code> methods used to not take custom attributes, so all of the generic adapters were only available to paths without attributes.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// With lyon 0.17:</span>
+
+<span class="c1">// This worked. `transformed` is provided by the `PathBuilder` trait.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">transformed</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Rotation</span>::<span class="n">radians</span><span class="p">(</span><span class="n">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">));</span><span class="w"></span>
+
+<span class="c1">// This did not. The builder with attributes didn&#39;t implement `PathBuilder`.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder_with_attributes</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">transformed</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Rotation</span>::<span class="n">radians</span><span class="p">(</span><span class="n">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">));</span><span class="w"></span>
+</code></pre></div>
+
+<p>In <code>lyon 1.0</code> the <a href="https://docs.rs/lyon_path/1.0.0/lyon_path/builder/trait.PathBuilder.html"><code>PathBuilder</code> trait</a> takes custom attributes so that the generic adapters can take, forward or even modify them as needed. Paths that don't accept custom attributes can still implement the <code>PathBuilder</code> trait and simply discard the attributes or assert that they are empty.</p>
+<p>To avoid the need to explicitly pass empty attributes (<code>&amp;[]</code> or <code>NO_ATTRIBUTES</code>) everywhere when they aren't needed, there is a <code>NoAttributes&lt;Builder&gt;</code> adapter that exposes the <code>PathBuilder</code> methods without the attributes parameter.</p>
+<p>As a result:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// With lyon 1.0:</span>
+
+<span class="c1">// This still works. The type of builder is `NoAttributes&lt;Transformed&lt;BuilderImpl&gt;&gt;`.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">transformed</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Rotation</span>::<span class="n">radians</span><span class="p">(</span><span class="n">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">));</span><span class="w"></span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">end</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w"></span>
+
+
+<span class="c1">// This works now. The type of builder_2 is `Transformed&lt;BuilderWithAttributes&gt;`.</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Path</span>::<span class="n">builder_with_attributes</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">transformed</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Rotation</span>::<span class="n">radians</span><span class="p">(</span><span class="n">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">));</span><span class="w"></span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">];</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">];</span><span class="w"></span>
+<span class="n">builder</span><span class="p">.</span><span class="n">end</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+<p>In addition, some algorithms built on top of <code>PathBuilder</code> such as the path walker got support for custom attributes.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">dots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span>::<span class="n">new</span><span class="p">();</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">walker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PathWalker</span>::<span class="n">new</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">RegularPattern</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">callback</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="o">|</span><span class="n">event</span>: <span class="nc">WalkerEvent</span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="n">attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="n">attributes</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="n">attributes</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="n">attributes</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="n">dots</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">Dot</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">position</span>: <span class="nc">event</span><span class="p">.</span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">        </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Return true to continue walking along the path.</span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Invoke the callback above at a regular interval of 3 units.</span>
+<span class="w">    </span><span class="n">interval</span>: <span class="mf">3.0</span><span class="p">,</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">red</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">];</span><span class="w"></span>
+<span class="kd">let</span><span class="w"> </span><span class="n">blue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">];</span><span class="w"></span>
+<span class="c1">// Start with some red dots...</span>
+<span class="n">walker</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">red</span><span class="p">);</span><span class="w"></span>
+<span class="c1">// And end with blue ones. The dots in between will be have their color</span>
+<span class="c1">// automatically interpolated between red and blue.</span>
+<span class="n">walker</span><span class="p">.</span><span class="n">quadratic_bezier_to</span><span class="p">(</span><span class="n">point</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">50.0</span><span class="p">),</span><span class="w"> </span><span class="n">blue</span><span class="p">);</span><span class="w"></span>
+<span class="n">walker</span><span class="p">.</span><span class="n">end</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+<h2>New SVG path syntax parser</h2>
+<p>The SVG path syntax parser which was optionally available in the <code>lyon_svg</code> crate was re-implemented in the <code>lyon_extra</code> crate. The <a href="https://docs.rs/lyon_extra/1.0.0/lyon_extra/parser/struct.PathParser.html">new parser</a> supports a superset of the SVG path syntax in order to support specifying custom attributes. The syntax is the same with one exception: after each endpoint the following sequence of N numbers are parsed as the attributes of the endpoint.</p>
+<p>For example with two custom attributes, <code>M 0 0 1 2 Q 10 0 11 5 3 4</code> is equivalent to the standard SVG path <code>M 0 0 Q 10 0 11 5</code> where the endpoint at position <code>(0, 0)</code> has attributes <code>[1, 2]</code> and the endpoint <code>(11, 5)</code> has attributes <code>[3, 4]</code>. Note that control points cannot have custom attributes.</p>
+<p>You can give it a try in the command line app in the <code>cli</code> folder of the repository:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Display a stroked path with a single custom attribute (attribute index 0) interpreted as the variable line width multiplier.</span>
+cargo run -- show <span class="s2">&quot;M 40 100 5 80 20 30 C 100 220 150 50 250 100 2 L 200 50 40&quot;</span> -s --line-cap Round --line-join Round --custom-attributes <span class="m">1</span> --variable-line-width <span class="m">0</span>
+</code></pre></div>
+
+<h2>Side::Left/Right renamed into Side::Positive/Negative.</h2>
+<p>This change was pretty significant internally, but will only affect users of <code>StrokeVertex::side</code>.</p>
+<p>This enum is used to indicate on which side a point is along a stroked path. The side is determined using the sign of the cross product between and edge's tangent and a vector between the edge and the point in consideration. If the cross product is positive, we are on the left side... wait is it the right side? Well it depends on whether your y axis points up or down. Lyon's tessellators don't know or need to know about that. A possibility could have been to standardize on the y-down convention like most vector graphics packages, but it was a source of confusion and bugs. The new terminology, while less evocative, is unambiguous and less error prone. As a bonus <code>lyon_tessellation</code> doesn't get dictate or contradict its users conception of what is up and down which I think is a good thing.</p>
+<h1>Spring cleaning</h1>
+<p>In this release I removed a number of redundant or half-baked features that I felt was either not needed anymore, or wouldn't receive proper attention:</p>
+<ul>
+<li>Bindings for the libtess2 tessellator (The <code>lyon_tess2</code> crate) which could be enabled with the <code>tess2</code> cargo feature and provide an alternative tessellator. I originally maintained a wrapper in order to have something to compare lyon against and as an alternative for users running into issues. Since then the fill tessellator has matured enough that I don't think keeping the libtess2 alternative is worth the effort anymore.</li>
+<li>The path splitter, which was fun but buggy. I never had the time/energy/motivation to grow into a robust implementation.</li>
+<li>The <code>Monotonic&lt;T&gt;</code> wrapper in <code>lyon_geom</code>.</li>
+<li>The <code>lyon_svg</code> crate (the path parser moved to <code>lyon_extra</code>).</li>
+<li><code>lyon_extra</code> had a buggy software rasterizer that I had intended to use for testing but never got to working properly.</li>
+</ul>
+<p>I suspect that most of the removed features had little to no users. If you depended on one of them, I suggest copying their implementation from <code>lyon 0.17</code> in your code.</p>
+<p>These removals relieve some maintenance burden and bring the whole package to a more consistent level of quality and robustness. Some of the half-baked parts contributed to my mental block around calling it a <code>1.0</code>.</p>
+<h1>Wrapping up</h1>
+<p><code>lyon 1.0.0</code> wasn't as big a release as, say, <code>0.15.0</code> in which the fill tessellator was rewritten. It isn't the end of a cycle nor the beginning of one, it is simply time to do a bit of cleanup and mark the symbolic <code>1.0</code> to reflect that the project is fairly stable.</p>
+<p>I did rewrite the stroke tessellator to introduce the fancy variable width feature. It was not a major effort because the stroke tessellator is a fairly simple algorithm, but it means there's realistically a higher risk of finding some new bugs there. I encourage you all to report any issue you run into and I will do my best to fix them quickly.</p>
+<p>There are a number of lyon-related things I would like to do next, some of which are venturing away from tessellated triangle meshes. I don't want to tease them out too soon as it may be a while before I get them into a workable state. Stay tuned!</p>
+<p>This symbolic milestone is as good a time as any to thank all of the people who contributed in small or in big ways to the project. So in chronological order, many thanks to:</p>
+<ul>
+<li><a href="https://github.com/UrbanSolution/">Thomas (@UrbanSolution)</a></li>
+<li><a href="https://github.com/RazrFalcon">Evgeniy Reizner (@RazrFalcon)</a></li>
+<li><a href="https://github.com/o0Ignition0o">Jeremy Lempereur (@o0Ignition0o)</a></li>
+<li><a href="https://github.com/emilio">Emilio Cobos Álvarez (@emilio)</a></li>
+<li><a href="https://github.com/icefoxen">@icefoxen</a></li>
+<li><a href="https://github.com/jaemk">James Kominick (@jaemk)</a></li>
+<li><a href="https://github.com/dowoncha">@dowoncha</a></li>
+<li><a href="https://github.com/nivkner">@nivkner</a></li>
+<li><a href="https://github.com/kuxv">@kuxv</a></li>
+<li><a href="https://github.com/kaedroho">Karl Hobley (@kaedroho)</a></li>
+<li><a href="https://github.com/Noxivs">@Noxivs</a></li>
+<li><a href="https://github.com/anna-liao">Anna Liao (@anna-liao)</a></li>
+<li><a href="https://github.com/EloD10">@EloD10</a></li>
+<li><a href="https://github.com/pizzaiter">@pizzaiter</a></li>
+<li><a href="https://github.com/whmountains">Caleb Whiting (@whmountains)</a></li>
+<li><a href="https://github.com/bostelk">Kyle Bostelmann (@bostelk)</a></li>
+<li><a href="https://github.com/orhanbalci">Orhan Balci (@orhanbalci)</a></li>
+<li><a href="https://github.com/zen3ger">Roland Kovacs (@zen3ger)</a></li>
+<li><a href="https://github.com/SilentByte">Rico A. Beti (@SilentByte)</a></li>
+<li><a href="https://github.com/msiglreith">@msiglreith</a></li>
+<li><a href="https://github.com/kleintom">Tom Klein (@kleintom)</a></li>
+<li><a href="https://github.com/gralpli">@gralpli</a></li>
+<li><a href="https://github.com/SimonSapin">Simon Sapin (@SimonSapin)</a></li>
+<li><a href="https://github.com/hardiesoft">Jon Hardie (@hardiesoft)</a></li>
+<li><a href="https://github.com/Dollab">Bastien (@Dollab)</a></li>
+<li><a href="https://github.com/artursapek">Artur Sapek (@artursapek)</a></li>
+<li><a href="https://github.com/HalfVoxel">Aron Granberg (@HalfVoxel)</a></li>
+<li><a href="https://github.com/bnjbvr">Benjamin Bouvier (@bnjbvr)</a></li>
+<li><a href="https://github.com/mr1sunshine">Aleksandr Ovchinnikov (@mr1sunshine)</a></li>
+<li><a href="https://github.com/tronical">Simon Hausmann (@tronical)</a></li>
+<li><a href="https://github.com/yutannihilation">Hiroaki Yutani (@yutannihilation)</a></li>
+<li><a href="https://github.com/carrascomj">Jorge Carrasco (@carrascomj)</a></li>
+<li><a href="https://github.com/martinfrances107">Martin Frances (@martinfrances107)</a></li>
+<li><a href="https://github.com/adrian17">Adrian Wielgosik (@adrian17)</a></li>
+<li><a href="https://github.com/ognarb">Carl Schwan (@ognarb)</a></li>
+<li><a href="https://github.com/eduardosm">Eduardo Sánchez Muñoz (@eduardosm)</a></li>
+<li><a href="https://github.com/halzy">Benjamin Halsted (@halzy)</a></li>
+<li><a href="https://github.com/Herschel">Mike Welsh (@Herschel)</a></li>
+<li><a href="https://github.com/simensgreen">simens (@simensgreen)</a></li>
+<li><a href="https://github.com/LU15W1R7H">Luis Wirth (@LU15W1R7H)</a></li>
+<li><a href="https://github.com/foobar27">Sébastien Wagener (@foobar27)</a></li>
+<li><a href="https://github.com/OfficialURL">Violeta Hernández (@OfficialURL)</a></li>
+<li><a href="https://github.com/gliderkite">@gliderkite</a></li>
+<li><a href="https://github.com/notgull">John (@notgull)</a></li>
+<li><a href="https://github.com/atouchet">Alex Touchet @atouchet</a></li>
+<li><a href="https://github.com/sameer">Sameer Puri (@sameer)</a></li>
+<li><a href="https://github.com/CoorFun">@CoorFun</a></li>
+<li><a href="https://github.com/murtyjones">Murty Jones (@murtyjones)</a></li>
+<li><a href="https://github.com/tarkah">Cory Forsstrom (@tarkah)</a></li>
+<li><a href="https://github.com/Mivik">@Mivik</a></li>
+</ul>
+<p>Thank y'all! You rock!</p>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Mon 11 July 2022</p>
+    <p>Category: <a href="https://nical.github.io/category/lyon-rust.html">lyon, rust</a>
+    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Nicolas Silva.</p>
+    </div>
+  </main>
+</body>
+</html>

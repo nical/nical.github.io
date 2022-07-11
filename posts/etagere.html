@@ -147,21 +147,7 @@ etc...
 <h2>Methodology</h2>
 <p>In order to iterate quickly, I wanted to test algorithms outside of Firefox. I made a small Rust command-line program very similar to the one I had made for guillotiere (read: mostly copy-pasted from it) which I could use to replay recorded real-world atlas allocation workloads, recorded via some instrumentation in Firefox.</p>
 <p>I ended up with a few scripts to replay the allocations different browsing sessions, that looked like:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 atlas allocate <span class="m">7</span> <span class="m">23</span> -n <span class="m">1</span>
 atlas allocate <span class="m">10</span> <span class="m">20</span> -n <span class="m">2</span>
 atlas allocate <span class="m">15</span> <span class="m">22</span> -n <span class="m">3</span>
@@ -177,7 +163,7 @@ atlas svg snapshot-01.svg
 atlas allocate <span class="m">15</span> <span class="m">15</span> -n <span class="m">8</span>
 <span class="c1"># ... Tens of thousands of lines like the above.</span>
 </code></pre></div>
-</td></tr></table>
+
 <p>I would first run the program to set some initial parameters, for example <code>atlas init tiled 2048 2048</code>, then run the scripts to replay some workloads. The scripts dumps some snapshots in SVG format at various fixed points. So that I could compare how different algorithms look at the same steps of the the same workloads.</p>
 <p>The program would also record various stats such as size distributions, the highest number of allocated items at any given step or the amount of wasted space coming from the allocation strategy.</p>
 <h2>The slab allocator</h2>

@@ -90,21 +90,7 @@ etc...
 &lt;h2&gt;Methodology&lt;/h2&gt;
 &lt;p&gt;In order to iterate quickly, I wanted to test algorithms outside of Firefox. I made a small Rust command-line program very similar to the one I had made for guillotiere (read: mostly copy-pasted from it) which I could use to replay recorded real-world atlas allocation workloads, recorded via some instrumentation in Firefox.&lt;/p&gt;
 &lt;p&gt;I ended up with a few scripts to replay the allocations different browsing sessions, that looked like:&lt;/p&gt;
-&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
 atlas allocate &lt;span class="m"&gt;7&lt;/span&gt; &lt;span class="m"&gt;23&lt;/span&gt; -n &lt;span class="m"&gt;1&lt;/span&gt;
 atlas allocate &lt;span class="m"&gt;10&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt; -n &lt;span class="m"&gt;2&lt;/span&gt;
 atlas allocate &lt;span class="m"&gt;15&lt;/span&gt; &lt;span class="m"&gt;22&lt;/span&gt; -n &lt;span class="m"&gt;3&lt;/span&gt;
@@ -120,7 +106,7 @@ atlas svg snapshot-01.svg
 atlas allocate &lt;span class="m"&gt;15&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt; -n &lt;span class="m"&gt;8&lt;/span&gt;
 &lt;span class="c1"&gt;# ... Tens of thousands of lines like the above.&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
 &lt;p&gt;I would first run the program to set some initial parameters, for example &lt;code&gt;atlas init tiled 2048 2048&lt;/code&gt;, then run the scripts to replay some workloads. The scripts dumps some snapshots in SVG format at various fixed points. So that I could compare how different algorithms look at the same steps of the the same workloads.&lt;/p&gt;
 &lt;p&gt;The program would also record various stats such as size distributions, the highest number of allocated items at any given step or the amount of wasted space coming from the allocation strategy.&lt;/p&gt;
 &lt;h2&gt;The slab allocator&lt;/h2&gt;
