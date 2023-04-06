@@ -102,33 +102,33 @@ When considering this, note that:
 <p>Ideally you end up with very few shaders that draw into the main scene to make batching easier, and have as many specialized shaders as you want pre-rendering patterns in texture atlases.</p>
 <p>The general idea for batching algorithms is to iterate over the primitives in back-to-front order and find a compatible batch. Compatibility is evaluated by comparing "batch keys" that contain the shader ID, blending parameters and input texture/buffer IDs (assuming you can't use bindless resources), etc.</p>
 <p>The simplest algorithm would look like:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">prim</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">back_to_front_list</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">prim</span><span class="p">.</span><span class="n">batch_key</span><span class="p">().</span><span class="n">is_compatible_with</span><span class="p">(</span><span class="n">current_batch</span><span class="p">.</span><span class="n">key</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">current_batch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_new_batch</span><span class="p">(</span><span class="n">prim</span><span class="p">.</span><span class="n">key</span><span class="p">());</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">prim</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">back_to_front_list</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">prim</span><span class="p">.</span><span class="n">batch_key</span><span class="p">().</span><span class="n">is_compatible_with</span><span class="p">(</span><span class="n">current_batch</span><span class="p">.</span><span class="n">key</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">current_batch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_new_batch</span><span class="p">(</span><span class="n">prim</span><span class="p">.</span><span class="n">key</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="n">current_batch</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">prim</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">current_batch</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">prim</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p>It's quite simple and only tries to batch consecutive similar primitives. The nightmare scenario here is having alternating incompatible primitives. For WebRender this would definitely not provide a good enough batching so we do something that involves walking back the list of batches until we either find a compatible one (in which case we add the primitive to it), or an incompatible one that intersects with the primitive in screen space (in which case we have to create a new batch).</p>
 <p>Something like:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&#39;</span><span class="na">prim_loop</span>: <span class="nc">for</span><span class="w"> </span><span class="n">prim</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">back_to_front_list</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">batch</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">batches</span><span class="p">.</span><span class="n">iter_mut</span><span class="p">().</span><span class="n">rev</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">prim</span><span class="p">.</span><span class="n">batch_key</span><span class="p">().</span><span class="n">is_compatible_with</span><span class="p">(</span><span class="n">batch</span><span class="p">.</span><span class="n">key</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">batch</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">prim</span><span class="p">);</span><span class="w"></span>
-<span class="w">            </span><span class="k">continue</span><span class="w"> </span><span class="nl">&#39;prim_loop</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="o">&#39;</span><span class="na">prim_loop</span>: <span class="nc">for</span><span class="w"> </span><span class="n">prim</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">back_to_front_list</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">batch</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">batches</span><span class="p">.</span><span class="n">iter_mut</span><span class="p">().</span><span class="n">rev</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">prim</span><span class="p">.</span><span class="n">batch_key</span><span class="p">().</span><span class="n">is_compatible_with</span><span class="p">(</span><span class="n">batch</span><span class="p">.</span><span class="n">key</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">batch</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">prim</span><span class="p">);</span>
+<span class="w">            </span><span class="k">continue</span><span class="w"> </span><span class="nl">&#39;prim_loop</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">prim</span><span class="p">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">prim</span><span class="p">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="c1">// Can&#39;t walk further down the batch list, it would break ordering </span>
-<span class="w">            </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="n">batches</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">make_new_batch</span><span class="p">(</span><span class="n">prim</span><span class="p">.</span><span class="n">key</span><span class="p">()));</span><span class="w"></span>
-<span class="w">    </span><span class="n">batches</span><span class="p">.</span><span class="n">last</span><span class="p">().</span><span class="n">add</span><span class="p">(</span><span class="n">prim</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">batches</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">make_new_batch</span><span class="p">(</span><span class="n">prim</span><span class="p">.</span><span class="n">key</span><span class="p">()));</span>
+<span class="w">    </span><span class="n">batches</span><span class="p">.</span><span class="n">last</span><span class="p">().</span><span class="n">add</span><span class="p">(</span><span class="n">prim</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p>"overlap" here could be an AABB intersection check with each primitive in the batch or a single intersection check with a batch-wide AABB. WebRender does a mix of the two where it will consider only the batch AABB if it is a good enough approximation and only track multiple AABBs per batch if a single one isn't good enough.</p>

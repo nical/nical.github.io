@@ -79,27 +79,27 @@ The main idea behind it can be explained simply: "Maintain a list of free rectan
 <p><img alt="Guillotine allocation visualization" src="https://nical.github.io/images/atlas/guillotine-example-1.svg"></p>
 <p>The image above shows the state of the atlas after a few allocations. Allocated space is represented in light blue while free space is in dark gray. It is much easier to work with than a list of coordinates in plain text. It was handy when developing and tuning the algorithm, but also when using it in other projects. While looking at the visual representation of the state animate you quickly develop an intuition of how the algorithm unfolds Concepts that are hard to explain in written form sometimes just "make sense" visually.</p>
 <p>Dumping visual representations in a .svg file is not only a powerful tool when exploring problem some spaces, it is also surprisingly simple to do. SVG is a straightforward XML type of format which is annoying to type by hand but effortless to generate with very simple helpers. Here is how it looks using a tiny helper crate called <a href="https://crates.io/crates/svg_fmt">svg_fmt</a>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="n">svg_fmt</span>::<span class="o">*</span><span class="p">;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="n">svg_fmt</span>::<span class="o">*</span><span class="p">;</span>
 
-<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span>::<span class="n">fs</span>::<span class="n">File</span>::<span class="n">create</span><span class="p">(</span><span class="s">&quot;tmp.svg&quot;</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span>::<span class="n">fs</span>::<span class="n">File</span>::<span class="n">create</span><span class="p">(</span><span class="s">&quot;tmp.svg&quot;</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
 
 <span class="w">    </span><span class="c1">// Need this at the beginning of the file. Set the size of the drawable area to 800x600.</span>
-<span class="w">    </span><span class="fm">writeln!</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">BeginSvg</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">w</span>: <span class="mf">800.0</span><span class="p">,</span><span class="w"> </span><span class="n">h</span>: <span class="mf">600.0</span><span class="w"> </span><span class="p">})</span><span class="o">?</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="fm">writeln!</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">BeginSvg</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">w</span>: <span class="mf">800.0</span><span class="p">,</span><span class="w"> </span><span class="n">h</span>: <span class="mf">600.0</span><span class="w"> </span><span class="p">})</span><span class="o">?</span><span class="p">;</span>
 
 <span class="w">    </span><span class="c1">// Draw a rectangle.</span>
-<span class="w">    </span><span class="fm">writeln!</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="n">output</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="s">r#&quot;    {}&quot;#</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="n">rectangle</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">200.0</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="n">fill</span><span class="p">(</span><span class="n">rgb</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="p">.</span><span class="n">stroke</span><span class="p">(</span><span class="n">Stroke</span>::<span class="n">Color</span><span class="p">(</span><span class="n">black</span><span class="p">(),</span><span class="w"> </span><span class="mf">1.0</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="fm">writeln!</span><span class="p">(</span>
+<span class="w">        </span><span class="n">output</span><span class="p">,</span>
+<span class="w">        </span><span class="s">r#&quot;    {}&quot;#</span><span class="p">,</span>
+<span class="w">        </span><span class="n">rectangle</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">200.0</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">fill</span><span class="p">(</span><span class="n">rgb</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">stroke</span><span class="p">(</span><span class="n">Stroke</span>::<span class="n">Color</span><span class="p">(</span><span class="n">black</span><span class="p">(),</span><span class="w"> </span><span class="mf">1.0</span><span class="p">))</span>
+<span class="w">    </span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
 
 <span class="w">    </span><span class="c1">// Draw some text at position 100.0 100.0</span>
-<span class="w">    </span><span class="fm">writeln!</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Some text!&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()));</span><span class="w"></span>
+<span class="w">    </span><span class="fm">writeln!</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Some text!&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()));</span>
 
 <span class="w">    </span><span class="c1">// Need this at the end.</span>
-<span class="w">    </span><span class="fm">writeln!</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">EndSvg</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="fm">writeln!</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">EndSvg</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
 </code></pre></div>
 
 <p>So many useful visualizations can be easily built out of simple colored rectangles and text and there's other primitives provided by svg_fmt. Rectangles were all I needed in guillotiere.</p>
@@ -124,12 +124,12 @@ The application deserializes the state of the atlas from a file, execute a comma
 <li>and <a href="https://crates.io/crates/clap">clap</a> for parsing command-line arguments.</li>
 </ul>
 <p>Put together, this gave me an interactive playground to test the algorithm. Playing around in a terminal would look like:</p>
-<div class="highlight"><pre><span></span><code>$ guillotiere init <span class="m">1024</span> <span class="m">1024</span>
-$ guillotiere allocate <span class="m">16</span> <span class="m">32</span>
-Allocated rectangle r1 of size 16x32 at origin <span class="o">[</span><span class="m">0</span>, <span class="m">0</span><span class="o">]</span>
-$ guillotiere allocate <span class="m">200</span> <span class="m">100</span> --svg <span class="m">01</span>.svg
-Allocated rectangle r2 of size 200x100 at origin <span class="o">[</span><span class="m">16</span>, <span class="m">0</span><span class="o">]</span>
-$ guillotiere deallocate r1 --svg <span class="m">02</span>.svg
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>guillotiere<span class="w"> </span>init<span class="w"> </span><span class="m">1024</span><span class="w"> </span><span class="m">1024</span>
+$<span class="w"> </span>guillotiere<span class="w"> </span>allocate<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">32</span>
+Allocated<span class="w"> </span>rectangle<span class="w"> </span>r1<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span>16x32<span class="w"> </span>at<span class="w"> </span>origin<span class="w"> </span><span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
+$<span class="w"> </span>guillotiere<span class="w"> </span>allocate<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="m">100</span><span class="w"> </span>--svg<span class="w"> </span><span class="m">01</span>.svg
+Allocated<span class="w"> </span>rectangle<span class="w"> </span>r2<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span>200x100<span class="w"> </span>at<span class="w"> </span>origin<span class="w"> </span><span class="o">[</span><span class="m">16</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
+$<span class="w"> </span>guillotiere<span class="w"> </span>deallocate<span class="w"> </span>r1<span class="w"> </span>--svg<span class="w"> </span><span class="m">02</span>.svg
 
 etc...
 </code></pre></div>
@@ -148,19 +148,19 @@ etc...
 <p>In order to iterate quickly, I wanted to test algorithms outside of Firefox. I made a small Rust command-line program very similar to the one I had made for guillotiere (read: mostly copy-pasted from it) which I could use to replay recorded real-world atlas allocation workloads, recorded via some instrumentation in Firefox.</p>
 <p>I ended up with a few scripts to replay the allocations different browsing sessions, that looked like:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
-atlas allocate <span class="m">7</span> <span class="m">23</span> -n <span class="m">1</span>
-atlas allocate <span class="m">10</span> <span class="m">20</span> -n <span class="m">2</span>
-atlas allocate <span class="m">15</span> <span class="m">22</span> -n <span class="m">3</span>
-atlas allocate <span class="m">14</span> <span class="m">23</span> -n <span class="m">4</span>
-atlas allocate <span class="m">19</span> <span class="m">22</span> -n <span class="m">5</span>
-atlas allocate <span class="m">5</span> <span class="m">22</span> -n <span class="m">6</span>
-atlas allocate <span class="m">15</span> <span class="m">15</span> -n <span class="m">7</span>
-atlas deallocate <span class="m">2</span>
-atlas deallocate <span class="m">5</span>
+atlas<span class="w"> </span>allocate<span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="m">23</span><span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+atlas<span class="w"> </span>allocate<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">20</span><span class="w"> </span>-n<span class="w"> </span><span class="m">2</span>
+atlas<span class="w"> </span>allocate<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="m">22</span><span class="w"> </span>-n<span class="w"> </span><span class="m">3</span>
+atlas<span class="w"> </span>allocate<span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">23</span><span class="w"> </span>-n<span class="w"> </span><span class="m">4</span>
+atlas<span class="w"> </span>allocate<span class="w"> </span><span class="m">19</span><span class="w"> </span><span class="m">22</span><span class="w"> </span>-n<span class="w"> </span><span class="m">5</span>
+atlas<span class="w"> </span>allocate<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">22</span><span class="w"> </span>-n<span class="w"> </span><span class="m">6</span>
+atlas<span class="w"> </span>allocate<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="m">15</span><span class="w"> </span>-n<span class="w"> </span><span class="m">7</span>
+atlas<span class="w"> </span>deallocate<span class="w"> </span><span class="m">2</span>
+atlas<span class="w"> </span>deallocate<span class="w"> </span><span class="m">5</span>
 
-atlas svg snapshot-01.svg
+atlas<span class="w"> </span>svg<span class="w"> </span>snapshot-01.svg
 
-atlas allocate <span class="m">15</span> <span class="m">15</span> -n <span class="m">8</span>
+atlas<span class="w"> </span>allocate<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="m">15</span><span class="w"> </span>-n<span class="w"> </span><span class="m">8</span>
 <span class="c1"># ... Tens of thousands of lines like the above.</span>
 </code></pre></div>
 

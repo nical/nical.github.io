@@ -86,23 +86,23 @@
 <p>The <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/iterator/index.html">iterator APIs</a> got a pretty major revamp. Previously the various flavors of path iterators would let you iterate over events such as <code>MoveTo(Point)</code>, <code>Close</code>, <code>LineTo(Point)</code> and equivalent curve segments types, in a postscript fashion similar to how the paths are created, in which we don't repeat the start of the event since we already provided it as the end of the previous one.
 This was simple to implement since it maps to how the path is stored, but pretty much every consumer of the API would have to keep track of both the previous end of segment and the starting position of the curve to do any meaningful work with the segments of the path.</p>
 <p>The <code>PathEvent</code> enum looked like this:</p>
-<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">PathEvent</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">MoveTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="n">Close</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">LineTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">PathEvent</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">MoveTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Close</span><span class="p">,</span>
+<span class="w">    </span><span class="n">LineTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span>
 <span class="w">    </span><span class="n">QuadraticTo</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span><span class="w"> </span><span class="n">Point</span><span class="p">),</span><span class="w"> </span><span class="c1">// control point, to</span>
 <span class="w">    </span><span class="c1">// etc.</span>
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p>And now looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">PathEvent</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">MoveTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="n">Close</span><span class="p">(</span><span class="n">LineSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="n">Line</span><span class="p">(</span><span class="n">LineSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="n">Quadratic</span><span class="p">(</span><span class="n">QuadraticBezierSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">PathEvent</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">MoveTo</span><span class="p">(</span><span class="n">Point</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Close</span><span class="p">(</span><span class="n">LineSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Line</span><span class="p">(</span><span class="n">LineSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Quadratic</span><span class="p">(</span><span class="n">QuadraticBezierSegment</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">),</span>
 <span class="w">    </span><span class="c1">// etc.</span>
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </code></pre></div>
 
 <p>In other words, I shifted the burden of tracking this information from the user to <a href="https://docs.rs/lyon_path/0.13.0/lyon_path/struct.Iter.html">the iterator</a> implementation by making path events contain the actual segments and by providing the closing segment in <code>PathEvent::Close(LineSegment&lt;f32&gt;)</code>.</p>
